@@ -1,3 +1,1 @@
 # SETR
-Guilherme
-Simão
