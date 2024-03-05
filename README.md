@@ -1,4 +1,4 @@
-# SETR :)
+# SETR
 **ADD YOUR FIRST FILE**
 
 git add prog.c
