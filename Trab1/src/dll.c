@@ -57,8 +57,42 @@ void MyDLLFind(DLL *dll, uint16_t key) {
 
 }
 
-void MyDLLFindNextPrev(DLL *dll) {  
+uint8_t* MyDLLFindNext(DLL *dll, uint16_t key) { 
 
+    if (dll->head == NULL) {
+        printf("The list is empty.\n");
+        return NULL;
+    }
+
+    Node* current = dll->head;
+    while (current != NULL) {
+        if (current->key == key && current->next != NULL) {
+            printf("Student found - ID: %d, Name: %s\n", current->key, current->data);
+            return current->data;
+        }
+        current = current->next;
+    }
+    printf("Student not found or is already last on the list.\n");
+    return NULL;
+}
+
+uint8_t* MyDLLFindPrev(DLL *dll, uint16_t key) { 
+
+    if (dll->head == NULL) {
+        printf("The list is empty.\n");
+        return NULL;
+    }
+
+    Node* current = dll->head;
+    while (current != NULL) {
+        if (current->key == key && current->prev != NULL) {
+            printf("Student found - ID: %d, Name: %s\n", current->key, current->data);
+            return current->data;
+        }
+        current = current->next;
+    }
+    printf("Student not found or is already first on the list.\n");
+    return NULL;
 }
 
 void MyDLLShowElements(DLL *dll) {

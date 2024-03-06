@@ -34,6 +34,8 @@ int MyDLLRemove(DLL *dll, uint16_t nmec);
 
 void MyDLLFind(DLL *dll, uint16_t nemc);
 
-void MyDLLFindNextPrev(DLL *dll);
+uint8_t* MyDLLFindNext(DLL *dll, uint16_t key);
+
+uint8_t* MyDLLFindPrev(DLL *dll, uint16_t key);
 
 void MyDLLShowElements(DLL *dll);
