@@ -63,7 +63,7 @@ uint8_t* MyDLLFind(DLL *dll, uint16_t key) {
             printf("Student found - Id: %d, Name: %s\n", current->key, current->data);
             return current->data;
         }
-        current = current->next;
+        current = (Node*)current->next;
     }
     printf("Student not found.\n");
     return NULL;
