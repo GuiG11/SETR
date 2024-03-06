@@ -42,6 +42,7 @@ int main(void) {
             printf("Insert id: \n");
             scanf("%hd", &id);
             MyDLLFind(&dll, id);
+            printf("\n");
             break;
         case 4:
             MyDLLFindNextPrev(&dll);

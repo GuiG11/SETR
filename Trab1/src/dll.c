@@ -60,7 +60,7 @@ uint8_t* MyDLLFind(DLL *dll, uint16_t key) {
     Node* current = dll->head;
     while (current != NULL) {
         if (current->key == key) {
-            printf("Student found - ID: %d, Name: %s\n", current->key, current->data);
+            printf("Student found - Id: %d, Name: %s\n", current->key, current->data);
             return current->data;
         }
         current = current->next;
