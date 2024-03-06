@@ -32,7 +32,7 @@ int MyDLLInsert(DLL *dll, uint16_t nmec, uint8_t name[]);
 
 int MyDLLRemove(DLL *dll, uint16_t nmec);
 
-void MyDLLFind(DLL *dll, uint16_t nemc);
+uint8_t* MyDLLFind(DLL *dll, uint16_t key);
 
 void MyDLLFindNextPrev(DLL *dll);
 
