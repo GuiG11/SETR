@@ -19,16 +19,7 @@ int MyDLLInsert(DLL *dll, uint16_t key, uint8_t data[]) {
         return EXIT_FAILURE;
     }
 
-    Node* current = dll->head;
-    while(current != NULL) {
-        if (current->key == key) {
-            printf("Id already exists!\n");
-            return EXIT_FAILURE;
-        }
-        current = current->next;
-    }
-
-    Node* newNode = &dll->elements[dll->num_elements]; // Atribui o endereço de memória do próximo nó disponível no array de elementos
+    Node* newNode = &dll->elements[dll->num_elements]; 
     newNode->key = key;
     for (int i = 0; i < MAX_DATA_SIZE; i++) {
         newNode->data[i] = data[i];
@@ -37,13 +28,13 @@ int MyDLLInsert(DLL *dll, uint16_t key, uint8_t data[]) {
     newNode->next = NULL;
     newNode->prev = NULL;
     
-    if (dll->head == NULL) {  // Se a lista estiver vazia o novo nó torna-se tanto o head como o tail da DLL
+    if (dll->head == NULL) {  
         dll->head = newNode;
         dll->tail = newNode;  
     } else {
-        dll->tail->next = newNode;  // O ponteiro next do último nó (tail) aponta para o novo nó
-        newNode->prev = dll->tail;  // O ponteiro prev do novo nó aponta para o último nó
-        dll->tail = newNode;        // O último nó aponta para o novo nó
+        dll->tail->next = newNode;  
+        newNode->prev = dll->tail; 
+        dll->tail = newNode;        
     }
 
     dll->num_elements++;
