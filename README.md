@@ -21,6 +21,8 @@ git log --graph
 
 git log --all
 
+git log --oneline --all --graph
+
 **GOING BACK IN HISTORY**
 
 git checkout 12345ab
