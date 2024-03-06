@@ -36,12 +36,10 @@ int MyDLLInsert(DLL *dll, uint16_t key, uint8_t data[]) {
     }
 
     dll->num_elements++;
-    return EXIT_SUCCESS;
 }
 
 int MyDLLRemove(DLL *dll, uint16_t key) {
-    // Implementation for removal function
-    return 0;
+ 
 }
 
 uint8_t* MyDLLFind(DLL *dll, uint16_t key) {
@@ -63,7 +61,7 @@ uint8_t* MyDLLFind(DLL *dll, uint16_t key) {
 }
 
 void MyDLLFindNextPrev(DLL *dll) {  
-    // Implementation for find next/prev function
+
 }
 
 void MyDLLShowElements(DLL *dll) {
