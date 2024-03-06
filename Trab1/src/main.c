@@ -14,12 +14,13 @@ int main(void) {
     char name[MAX_DATA_SIZE];
 
     do {
-        printf("----------------MENU----------------\n"
+        printf("------------------MENU-------------------\n"
                "01: Insert a new student\n"
                "02: Remove a student\n"
                "03: Find a student\n"
-               "04: Search for a student in the list\n"
-               "05: Show Doubly Linked List elements\n"
+               "04: Find the next student in the list\n"
+               "05: Find the previous student in the list\n"
+               "06: Show Doubly Linked List elements\n"
                "00: Exit\n"
                "Please choose an option: \n");
     
@@ -45,14 +46,24 @@ int main(void) {
             printf("\n");
             break;
         case 4:
-            MyDLLFindNextPrev(&dll);
+            printf("Insert id: \n");
+            scanf("%hd", &id);
+            MyDLLFindNext(&dll, id);
+            printf("\n");
+            break;
         case 5:
+            printf("Insert id: \n");
+            scanf("%hd", &id);
+            MyDLLFindPrev(&dll, id);
+            printf("\n");
+            break;
+        case 6:
             MyDLLShowElements(&dll);
             printf("\n");
         default:
             break;
         }
-    } while (option >= 1 && option <= 5);
+    } while (option >= 1 && option <= 6);
 
     return 0;
 }
