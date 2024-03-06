@@ -38,4 +38,4 @@ uint8_t* MyDLLFindNext(DLL *dll, uint16_t key);
 
 uint8_t* MyDLLFindPrev(DLL *dll, uint16_t key);
 
-void MyDLLShowElements(DLL *dll);
+uint8_t* MyDLLShowElements(DLL *dll);

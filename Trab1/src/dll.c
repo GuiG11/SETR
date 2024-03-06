@@ -67,7 +67,8 @@ uint8_t* MyDLLFindNext(DLL *dll, uint16_t key) {
     Node* current = dll->head;
     while (current != NULL) {
         if (current->key == key && current->next != NULL) {
-            printf("Student found - ID: %d, Name: %s\n", current->key, current->data);
+            current = current->next;
+            printf("Student found - Id: %d, Name: %s\n", current->key, current->data);
             return current->data;
         }
         current = current->next;
@@ -86,7 +87,8 @@ uint8_t* MyDLLFindPrev(DLL *dll, uint16_t key) {
     Node* current = dll->head;
     while (current != NULL) {
         if (current->key == key && current->prev != NULL) {
-            printf("Student found - ID: %d, Name: %s\n", current->key, current->data);
+            current = current->prev;
+            printf("Student found - Id: %d, Name: %s\n", current->key, current->data);
             return current->data;
         }
         current = current->next;
@@ -95,12 +97,17 @@ uint8_t* MyDLLFindPrev(DLL *dll, uint16_t key) {
     return NULL;
 }
 
-void MyDLLShowElements(DLL *dll) {
+uint8_t* MyDLLShowElements(DLL *dll) {
+
+    if (dll->head == NULL) {
+        printf("The list is empty.\n");
+        return NULL;
+    }
 
     Node* current = dll->head;
     printf("Doubly Linked List elements: \n");
     while(current != NULL) {
-        printf("ID: %d, Name: %s\n", current->key, current->data);
+        printf("Student - Id: %d, Name: %s\n", current->key, current->data);
         current = current->next;
     }
 }
