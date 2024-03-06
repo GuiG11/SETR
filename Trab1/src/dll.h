@@ -4,36 +4,36 @@
 
 
 #define MAX_DATA_SIZE 100
-#define MAX_ELEMENTS 4
+#define MAX_ELEMENTS 3
 
 typedef struct 
 {
-    uint16_t nmec;  
-    char data[MAX_DATA_SIZE];
-    struct Student *next;
-    struct Student *previous;
+    uint16_t key;  
+    uint8_t data[MAX_DATA_SIZE];
+    struct Node *next;
+    struct Node *prev;
 
-}Student;
+}Node;
 
 
 typedef struct 
 {
-    Student *head;
-    Student *tail;
+    Node elements[MAX_ELEMENTS];
+    Node *head;
+    Node *tail;
     int num_elements;
-    int max_elements;
     
-}DoublyLinkedList;
+}DLL;
 
 
-void MyDLLInit(DoublyLinkedList *dll);
+void MyDLLInit(DLL *dll);
 
-int MyDLLInsert(DoublyLinkedList *dll, uint16_t nmec, char *data);
+int MyDLLInsert(DLL *dll, uint16_t nmec, uint8_t name[]);
 
-int MyDLLRemove(DoublyLinkedList *dll, uint16_t nmec);
+int MyDLLRemove(DLL *dll, uint16_t nmec);
 
-void MyDLLFind(DoublyLinkedList *dll, uint16_t nemc);
+void MyDLLFind(DLL *dll, uint16_t nemc);
 
-void MyDLLFindNext(DoublyLinkedList *dll);
+void MyDLLFindNextPrev(DLL *dll);
 
-void MyDLLFindPrevious(DoublyLinkedList *dll);
+void MyDLLShowElements(DLL *dll);
