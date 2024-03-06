@@ -3,9 +3,7 @@
 
 #include "dll.h"
 
-
 void MyDLLInit(DLL *dll) {
-    
     dll->head = NULL;
     dll->tail = NULL;
     dll->num_elements = 0;
@@ -38,22 +36,37 @@ int MyDLLInsert(DLL *dll, uint16_t key, uint8_t data[]) {
     }
 
     dll->num_elements++;
+    return EXIT_SUCCESS;
 }
 
 int MyDLLRemove(DLL *dll, uint16_t key) {
-
+    // Implementation for removal function
+    return 0;
 }
 
-void MyDLLFind(DLL *dll, uint16_t key) {
+uint8_t* MyDLLFind(DLL *dll, uint16_t key) {
+    if (dll->head == NULL) {
+        printf("The list is empty.\n");
+        return NULL;
+    }
 
+    Node* current = dll->head;
+    while (current != NULL) {
+        if (current->key == key) {
+            printf("Student found - ID: %d, Name: %s\n", current->key, current->data);
+            return current->data;
+        }
+        current = current->next;
+    }
+    printf("Student not found.\n");
+    return NULL;
 }
 
 void MyDLLFindNextPrev(DLL *dll) {  
-
+    // Implementation for find next/prev function
 }
 
 void MyDLLShowElements(DLL *dll) {
-
     Node* current = dll->head;
     printf("Doubly Linked List elements: \n");
     while(current != NULL) {

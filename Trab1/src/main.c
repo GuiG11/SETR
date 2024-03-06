@@ -39,6 +39,8 @@ int main(void) {
             MyDLLRemove(&dll, id);
             break;
         case 3:
+            printf("Insert id: \n");
+            scanf("%hd", &id);
             MyDLLFind(&dll, id);
             break;
         case 4:
