@@ -3,8 +3,8 @@
 #include <stdint.h>
 
 
-#define MAX_DATA_SIZE 100
-#define MAX_ELEMENTS 3
+#define MAX_DATA_SIZE 50
+#define MAX_ELEMENTS 7
 
 typedef struct 
 {
@@ -28,9 +28,9 @@ typedef struct
 
 void MyDLLInit(DLL *dll);
 
-int MyDLLInsert(DLL *dll, uint16_t nmec, uint8_t name[]);
+int MyDLLInsert(DLL *dll, uint16_t key, uint8_t data[]);
 
-int MyDLLRemove(DLL *dll, uint16_t nmec);
+int MyDLLRemove(DLL *dll, uint16_t key);
 
 uint8_t* MyDLLFind(DLL *dll, uint16_t key);
 
@@ -38,4 +38,8 @@ uint8_t* MyDLLFindNext(DLL *dll, uint16_t key);
 
 uint8_t* MyDLLFindPrev(DLL *dll, uint16_t key);
 
+void MyDLLRandomFill(DLL *dll);
+
 uint8_t* MyDLLShowElements(DLL *dll);
+
+void MyDLLClear(DLL *dll);
