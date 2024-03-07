@@ -4,7 +4,7 @@
 
 
 #define MAX_DATA_SIZE 50
-#define MAX_ELEMENTS 7
+#define MAX_ELEMENTS 4
 
 typedef struct 
 {

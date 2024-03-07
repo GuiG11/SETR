@@ -14,20 +14,21 @@ int MyDLLInsert(DLL *dll, uint16_t key, uint8_t data[]) {
 
     if (dll->num_elements >= MAX_ELEMENTS)
     {
-        printf("Doubly Linked List is full!\n");
+        printf("Failed to insert more information. The list is full.\n");
         return EXIT_FAILURE;
     }
 
     Node* current = dll->head;
     while(current != NULL) {
         if (current->key == key) {
-            printf("ID already exists!\n");
+            printf("Locker already exists.\n");
             return EXIT_FAILURE;
         }
         current = (Node*)current->next;
     }
 
-    Node* newNode = &dll->elements[dll->num_elements];  // Atribui o endereço de memória do próximo nó disponível no array de elementos
+    // Gives the memory address of the next available node in the array 
+    Node* newNode = &dll->elements[dll->num_elements];  
     newNode->key = key;
     for (int i = 0; i < MAX_DATA_SIZE; i++) {
         newNode->data[i] = data[i];
@@ -36,13 +37,14 @@ int MyDLLInsert(DLL *dll, uint16_t key, uint8_t data[]) {
     newNode->next = NULL;
     newNode->prev = NULL;
     
-    if (dll->head == NULL) {  // Se a lista estiver vazia o novo nó torna-se tanto o head como o tail da DLL
+    // If list is empty the node is both the head and tail 
+    if (dll->head == NULL) {  
         dll->head = newNode;
         dll->tail = newNode;  
     } else {
-        dll->tail->next = (struct Node*)newNode;  // O ponteiro next do último nó (tail) aponta para o novo nó
-        newNode->prev = (struct Node*)dll->tail;  // O ponteiro prev do novo nó aponta para o último nó
-        dll->tail = (Node*)newNode;        // O último nó aponta para o novo nó
+        dll->tail->next = (struct Node*)newNode;  
+        newNode->prev = (struct Node*)dll->tail;  
+        dll->tail = (Node*)newNode;        
     }
 
     dll->num_elements++;
@@ -74,12 +76,12 @@ int MyDLLRemove(DLL *dll, uint16_t key) {
                 ((Node *)current->next)->prev = current->prev;
             }
             dll->num_elements--;
-            printf("Element with key %d removed from the list.\n", key);
+            printf("Locker number %d successfully removed.\n", key);
             return EXIT_SUCCESS;
         }
         current = (Node*)current->next;
     }
-    printf("Element with key %d not found in the list.\n", key);
+    printf("Locker number %d not found.\n", key);
     return EXIT_FAILURE;
 
 }
@@ -93,12 +95,12 @@ uint8_t* MyDLLFind(DLL *dll, uint16_t key) {
     Node* current = dll->head;
     while (current != NULL) {
         if (current->key == key) {
-            printf("Match found - ID: %d, Data: %s\n", current->key, current->data);
+            printf("Locker found - Number: %d, Location: %s\n", current->key, current->data);
             return current->data;
         }
         current = (Node*)current->next;
     }
-    printf("Match not found.\n");
+    printf("Locker not found.\n");
     return NULL;
 }
 
@@ -113,12 +115,12 @@ uint8_t* MyDLLFindNext(DLL *dll, uint16_t key) {
     while (current != NULL) {
         if (current->key == key && current->next != NULL) {
             current = (Node*)current->next;
-            printf("Match found - ID: %d, Data: %s\n", current->key, current->data);
+            printf("Locker found - Number: %d, Location: %s\n", current->key, current->data);
             return current->data;
         }
         current = (Node*)current->next;
     }
-    printf("Element not found or it is last on the list.\n");
+    printf("There is no locker after this one.\n");
     return NULL;
 }
 
@@ -133,12 +135,12 @@ uint8_t* MyDLLFindPrev(DLL *dll, uint16_t key) {
     while (current != NULL) {
         if (current->key == key && current->prev != NULL) {
             current = (Node*)current->prev;
-            printf("Match found - ID: %d, Data: %s\n", current->key, current->data);
+            printf("Locker found - Number: %d, Location: %s\n", current->key, current->data);
             return current->data;
         }
         current = (Node*)current->next;
     }
-    printf("Element not found or it is first on the list.\n");
+    printf("There is no locker before this one.\n");
     return NULL;
 }
 
@@ -152,9 +154,9 @@ uint8_t* MyDLLShowElements(DLL *dll) {
     }
 
     Node* current = dll->head;
-    printf("Doubly Linked List elements: \n");
+    printf("All lockers in the list: \n");
     while(current != NULL) {
-        printf("Element #%d - ID: %d,\t Data: %s\n", n++, current->key, current->data);
+        printf("Locker #%d - Number: %d,\t Location: %s\n", n++, current->key, current->data);
         current = (Node*)current->next;
     }
 }
@@ -164,7 +166,7 @@ void MyDLLRandomFill(DLL *dll) {
 
     // Check if list is full
     if (dll->num_elements >= MAX_ELEMENTS) {
-        printf("The list is already full. Cannot add more elements.\n");
+        printf("The list is already full. Cannot add more information.\n");
         return;
     }
 
@@ -184,9 +186,10 @@ void MyDLLRandomFill(DLL *dll) {
                 data[j] = randValue - 36 + 'a'; // Lowercase letter (a-z)
             }
         }
+        data[datasize] = '\0'; // Null terminate the string
 
         if (MyDLLInsert(dll, key, data) == EXIT_FAILURE) {
-            printf("Failed to insert more elements. The list is full.\n");
+            printf("Failed to insert more information. The list is full.\n");
             break;
         }
     }
@@ -205,5 +208,5 @@ void MyDLLClear(DLL *dll) {
     dll->tail = NULL;
     dll->num_elements = 0;
 
-    printf("Doubly linked list cleared.\n");
+    printf("List cleared.\n");
 }

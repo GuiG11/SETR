@@ -10,19 +10,19 @@ int main(void) {
     MyDLLInit(&dll);
 
     int option;
-    uint16_t id;
-    char name[MAX_DATA_SIZE];
+    uint16_t number;
+    char location[MAX_DATA_SIZE];
 
     do {
         printf("------------------MENU-------------------\n"
-               "01: Insert a new student\n"
-               "02: Remove a student\n"
-               "03: Find a student\n"
-               "04: Find the next student in the list\n"
-               "05: Find the previous student in the list\n"
+               "01: Insert a new locker\n"
+               "02: Remove a locker\n"
+               "03: Find a locker\n"
+               "04: Find the next locker in the list\n"
+               "05: Find the previous locker in the list\n"
                "06: Randomly fill the list\n"
-               "07: Show Doubly Linked List elements\n"
-               "08: Clear elements from the list\n"
+               "07: Show all lockers in the list\n"
+               "08: Clear lockers from the list\n"
                "00: Exit\n"
                "\nPlease choose an option: ");
     
@@ -37,35 +37,36 @@ int main(void) {
         switch (option) {
 
         case 1:
-            printf("Insert ID: ");
-            scanf("%hd", &id);
-            printf("Enter a name: ");
-            scanf("%s", name);
-            MyDLLInsert(&dll, id, name);
+            printf("Enter your locker number: ");
+            scanf("%hd", &number);
+            printf("Enter your locker location: ");
+            while (getchar() != '\n');
+            fgets(location, MAX_DATA_SIZE, stdin);
+            MyDLLInsert(&dll, number, location);
             printf("\n");
             break;
         case 2:
-            printf("Insert ID: ");
-            scanf("%hd", &id);
-            MyDLLRemove(&dll, id);
+            printf("Enter locker number: ");
+            scanf("%hd", &number);
+            MyDLLRemove(&dll, number);
             printf("\n");
             break;
         case 3:
-            printf("Insert ID: ");
-            scanf("%hd", &id);
-            MyDLLFind(&dll, id);
+            printf("Enter locker number: ");
+            scanf("%hd", &number);
+            MyDLLFind(&dll, number);
             printf("\n");
             break;
         case 4:
-            printf("Insert ID: ");
-            scanf("%hd", &id);
-            MyDLLFindNext(&dll, id);
+            printf("Enter locker number: ");
+            scanf("%hd", &number);
+            MyDLLFindNext(&dll, number);
             printf("\n");
             break;
         case 5:
-            printf("Insert ID: ");
-            scanf("%hd", &id);
-            MyDLLFindPrev(&dll, id);
+            printf("Enter locker number: ");
+            scanf("%hd", &number);
+            MyDLLFindPrev(&dll, number);
             printf("\n");
             break;
         case 6:
@@ -84,7 +85,7 @@ int main(void) {
             printf("Goodbye!\n");
             break;
         default:
-            printf("Invalid option!\n");
+            printf("ERROR!\n");
             break;
         }
 
