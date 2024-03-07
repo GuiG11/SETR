@@ -21,7 +21,7 @@ int MyDLLInsert(DLL *dll, uint16_t key, uint8_t data[]) {
     Node* current = dll->head;
     while(current != NULL) {
         if (current->key == key) {
-            printf("Locker already exists.\n");
+            printf("Key already exists.\n");
             return EXIT_FAILURE;
         }
         current = (Node*)current->next;
@@ -76,12 +76,12 @@ int MyDLLRemove(DLL *dll, uint16_t key) {
                 ((Node *)current->next)->prev = current->prev;
             }
             dll->num_elements--;
-            printf("Locker number %d successfully removed.\n", key);
+            printf("Info with key number %d successfully removed.\n", key);
             return EXIT_SUCCESS;
         }
         current = (Node*)current->next;
     }
-    printf("Locker number %d not found.\n", key);
+    printf("Info with key number %d not found.\n", key);
     return EXIT_FAILURE;
 
 }
@@ -95,12 +95,12 @@ uint8_t* MyDLLFind(DLL *dll, uint16_t key) {
     Node* current = dll->head;
     while (current != NULL) {
         if (current->key == key) {
-            printf("Locker found - Number: %d, Location: %s\n", current->key, current->data);
+            printf("User found - Key: %d, Info: %s\n", current->key, current->data);
             return current->data;
         }
         current = (Node*)current->next;
     }
-    printf("Locker not found.\n");
+    printf("Key not found.\n");
     return NULL;
 }
 
@@ -115,12 +115,12 @@ uint8_t* MyDLLFindNext(DLL *dll, uint16_t key) {
     while (current != NULL) {
         if (current->key == key && current->next != NULL) {
             current = (Node*)current->next;
-            printf("Locker found - Number: %d, Location: %s\n", current->key, current->data);
+            printf("User found - Key: %d, Info: %s\n", current->key, current->data);
             return current->data;
         }
         current = (Node*)current->next;
     }
-    printf("There is no locker after this one.\n");
+    printf("There is no info after this one.\n");
     return NULL;
 }
 
@@ -135,12 +135,12 @@ uint8_t* MyDLLFindPrev(DLL *dll, uint16_t key) {
     while (current != NULL) {
         if (current->key == key && current->prev != NULL) {
             current = (Node*)current->prev;
-            printf("Locker found - Number: %d, Location: %s\n", current->key, current->data);
+            printf("User found - Key: %d, Info: %s\n", current->key, current->data);
             return current->data;
         }
         current = (Node*)current->next;
     }
-    printf("There is no locker before this one.\n");
+    printf("There is no info before this one.\n");
     return NULL;
 }
 
@@ -154,9 +154,9 @@ uint8_t* MyDLLShowElements(DLL *dll) {
     }
 
     Node* current = dll->head;
-    printf("All lockers in the list: \n");
+    printf("All info in the list: \n");
     while(current != NULL) {
-        printf("Locker #%d - Number: %d,\t Location: %s\n", n++, current->key, current->data);
+        printf("User #%d - Key: %d,\t Info: %s\n", n++, current->key, current->data);
         current = (Node*)current->next;
     }
 }
