@@ -1,3 +1,11 @@
+/**
+* \file dll.c
+* \brief Implementation of a Doubly Linked List (DLL) module.
+* \details This module provides functionalities to manipulate a Doubly Linked List (DLL).
+* It includes functions for initialization, insertion, removal, searching,
+* displaying elements, random filling, and clearing the DLL.
+*/
+
 #include "dll.h"
 
 #include <stdlib.h>
