@@ -1,1 +1,4 @@
-# avoid folders
+# avoid build, doc and lib folders
+build
+doc
+lib
