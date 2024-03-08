@@ -1,0 +1,3 @@
+/home/simaopedro/Secretária/SETR/SETR/Trab1/build/CMakeFiles/main.dir
+/home/simaopedro/Secretária/SETR/SETR/Trab1/build/CMakeFiles/edit_cache.dir
+/home/simaopedro/Secretária/SETR/SETR/Trab1/build/CMakeFiles/rebuild_cache.dir
