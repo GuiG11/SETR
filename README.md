@@ -33,8 +33,8 @@ git branch new-branch
 
 **CHANGING TO ANOTHER BRANCH**
 
-git checkout master 
+git checkout master (branch that will be merged into)
 
 **MERGING BRANCHES**
 
-git merge new-branch
+git merge new-branch (branch to will merge into the current branch)
