@@ -1,4 +1,3 @@
-# avoid build, doc and lib folders
+# avoid build and doc folders
 build
 doc
-lib
