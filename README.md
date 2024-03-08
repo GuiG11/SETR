@@ -37,4 +37,4 @@ git checkout master (branch that will be merged into)
 
 **MERGING BRANCHES**
 
-git merge new-branch (branch to will merge into the current branch)
+git merge new-branch (branch that will merge into the current branch)
