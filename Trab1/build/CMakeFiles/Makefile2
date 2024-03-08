@@ -64,29 +64,46 @@ CMAKE_BINARY_DIR = /home/simaopedro/Secretária/SETR/SETR/Trab1/build
 
 # The main recursive "all" target.
 all: CMakeFiles/main.dir/all
+all: lib/all
 .PHONY : all
 
 # The main recursive "preinstall" target.
-preinstall:
+preinstall: lib/preinstall
 .PHONY : preinstall
 
 # The main recursive "clean" target.
 clean: CMakeFiles/main.dir/clean
+clean: lib/clean
 .PHONY : clean
+
+#=============================================================================
+# Directory level rules for directory lib
+
+# Recursive "all" directory target.
+lib/all: lib/CMakeFiles/dllLib.dir/all
+.PHONY : lib/all
+
+# Recursive "preinstall" directory target.
+lib/preinstall:
+.PHONY : lib/preinstall
+
+# Recursive "clean" directory target.
+lib/clean: lib/CMakeFiles/dllLib.dir/clean
+.PHONY : lib/clean
 
 #=============================================================================
 # Target rules for target CMakeFiles/main.dir
 
 # All Build rule for target.
-CMakeFiles/main.dir/all:
+CMakeFiles/main.dir/all: lib/CMakeFiles/dllLib.dir/all
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/simaopedro/Secretária/SETR/SETR/Trab1/build/CMakeFiles --progress-num=1,2,3 "Built target main"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/simaopedro/Secretária/SETR/SETR/Trab1/build/CMakeFiles --progress-num=3,4 "Built target main"
 .PHONY : CMakeFiles/main.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/main.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/simaopedro/Secretária/SETR/SETR/Trab1/build/CMakeFiles 3
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/simaopedro/Secretária/SETR/SETR/Trab1/build/CMakeFiles 4
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/main.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/simaopedro/Secretária/SETR/SETR/Trab1/build/CMakeFiles 0
 .PHONY : CMakeFiles/main.dir/rule
@@ -99,6 +116,32 @@ main: CMakeFiles/main.dir/rule
 CMakeFiles/main.dir/clean:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/clean
 .PHONY : CMakeFiles/main.dir/clean
+
+#=============================================================================
+# Target rules for target lib/CMakeFiles/dllLib.dir
+
+# All Build rule for target.
+lib/CMakeFiles/dllLib.dir/all:
+	$(MAKE) $(MAKESILENT) -f lib/CMakeFiles/dllLib.dir/build.make lib/CMakeFiles/dllLib.dir/depend
+	$(MAKE) $(MAKESILENT) -f lib/CMakeFiles/dllLib.dir/build.make lib/CMakeFiles/dllLib.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/simaopedro/Secretária/SETR/SETR/Trab1/build/CMakeFiles --progress-num=1,2 "Built target dllLib"
+.PHONY : lib/CMakeFiles/dllLib.dir/all
+
+# Build rule for subdir invocation for target.
+lib/CMakeFiles/dllLib.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/simaopedro/Secretária/SETR/SETR/Trab1/build/CMakeFiles 2
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 lib/CMakeFiles/dllLib.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/simaopedro/Secretária/SETR/SETR/Trab1/build/CMakeFiles 0
+.PHONY : lib/CMakeFiles/dllLib.dir/rule
+
+# Convenience name for target.
+dllLib: lib/CMakeFiles/dllLib.dir/rule
+.PHONY : dllLib
+
+# clean rule for target.
+lib/CMakeFiles/dllLib.dir/clean:
+	$(MAKE) $(MAKESILENT) -f lib/CMakeFiles/dllLib.dir/build.make lib/CMakeFiles/dllLib.dir/clean
+.PHONY : lib/CMakeFiles/dllLib.dir/clean
 
 #=============================================================================
 # Special targets to cleanup operation of make.

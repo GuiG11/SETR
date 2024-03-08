@@ -4,7 +4,7 @@
 # compile C with /usr/bin/cc
 C_DEFINES = 
 
-C_INCLUDES = 
+C_INCLUDES = -I/home/simaopedro/Secretária/SETR/SETR/Trab1/lib
 
 C_FLAGS = 
 

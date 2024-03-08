@@ -129,29 +129,18 @@ main/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/build
 .PHONY : main/fast
 
-src/dll.o: src/dll.c.o
-.PHONY : src/dll.o
+#=============================================================================
+# Target rules for targets named dllLib
 
-# target to build an object file
-src/dll.c.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/dll.c.o
-.PHONY : src/dll.c.o
+# Build rule for target.
+dllLib: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 dllLib
+.PHONY : dllLib
 
-src/dll.i: src/dll.c.i
-.PHONY : src/dll.i
-
-# target to preprocess a source file
-src/dll.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/dll.c.i
-.PHONY : src/dll.c.i
-
-src/dll.s: src/dll.c.s
-.PHONY : src/dll.s
-
-# target to generate assembly for a file
-src/dll.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/dll.c.s
-.PHONY : src/dll.c.s
+# fast build rule for target.
+dllLib/fast:
+	$(MAKE) $(MAKESILENT) -f lib/CMakeFiles/dllLib.dir/build.make lib/CMakeFiles/dllLib.dir/build
+.PHONY : dllLib/fast
 
 src/main.o: src/main.c.o
 .PHONY : src/main.o
@@ -185,10 +174,8 @@ help:
 	@echo "... depend"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
+	@echo "... dllLib"
 	@echo "... main"
-	@echo "... src/dll.o"
-	@echo "... src/dll.i"
-	@echo "... src/dll.s"
 	@echo "... src/main.o"
 	@echo "... src/main.i"
 	@echo "... src/main.s"
