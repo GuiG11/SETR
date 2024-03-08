@@ -12,6 +12,8 @@
 #include <stdio.h>
 #include <time.h>
 
+char node[] = "info";
+
 void MyDLLInit(DLL *dll) {
     dll->head = NULL;
     dll->tail = NULL;
@@ -26,6 +28,9 @@ int MyDLLInsert(DLL *dll, uint16_t key, uint8_t data[]) {
         return EXIT_FAILURE;
     }
 
+    printf("Enter key: ");
+    scanf("%hd", &key);
+
     Node* current = dll->head;
     while(current != NULL) {
         if (current->key == key) {
@@ -34,6 +39,10 @@ int MyDLLInsert(DLL *dll, uint16_t key, uint8_t data[]) {
         }
         current = (Node*)current->next;
     }
+
+    printf("Enter %s: ",node);
+    while (getchar() != '\n');
+    fgets(data, MAX_DATA_SIZE, stdin);
 
     // Gives the memory address of the next available node in the array 
     Node* newNode = &dll->elements[dll->num_elements];  
@@ -56,6 +65,8 @@ int MyDLLInsert(DLL *dll, uint16_t key, uint8_t data[]) {
     }
 
     dll->num_elements++;
+
+    return EXIT_SUCCESS;
 }
 
 int MyDLLRemove(DLL *dll, uint16_t key) {
@@ -63,6 +74,9 @@ int MyDLLRemove(DLL *dll, uint16_t key) {
         printf("The list is empty.\n");
         return EXIT_FAILURE;
     }
+
+    printf("Enter %s's key: ",node);
+    scanf("%hd", &key);
 
     Node* current = dll->head;
     while (current != NULL) {
@@ -84,12 +98,12 @@ int MyDLLRemove(DLL *dll, uint16_t key) {
                 ((Node *)current->next)->prev = current->prev;
             }
             dll->num_elements--;
-            printf("Info with key number %d successfully removed.\n", key);
+            printf("%s with key number %d successfully removed.\n", node, key);
             return EXIT_SUCCESS;
         }
         current = (Node*)current->next;
     }
-    printf("Info with key number %d not found.\n", key);
+    printf("%s with key number %d not found.\n", node, key);
     return EXIT_FAILURE;
 
 }
@@ -100,10 +114,13 @@ uint8_t* MyDLLFind(DLL *dll, uint16_t key) {
         return NULL;
     }
 
+    printf("Enter %s's key: ",node);
+    scanf("%hd", &key);
+
     Node* current = dll->head;
     while (current != NULL) {
         if (current->key == key) {
-            printf("User found - Key: %d, Info: %s\n", current->key, current->data);
+            printf("User found - key: %d, %s: %s\n", current->key, node, current->data);
             return current->data;
         }
         current = (Node*)current->next;
@@ -119,16 +136,19 @@ uint8_t* MyDLLFindNext(DLL *dll, uint16_t key) {
         return NULL;
     }
 
+    printf("Enter %s's key: ",node);
+    scanf("%hd", &key);
+
     Node* current = dll->head;
     while (current != NULL) {
         if (current->key == key && current->next != NULL) {
             current = (Node*)current->next;
-            printf("User found - Key: %d, Info: %s\n", current->key, current->data);
+            printf("User found - key: %d, %s: %s\n", current->key, node, current->data);
             return current->data;
         }
         current = (Node*)current->next;
     }
-    printf("There is no info after this one.\n");
+    printf("There is no %s after this one.\n", node);
     return NULL;
 }
 
@@ -139,16 +159,19 @@ uint8_t* MyDLLFindPrev(DLL *dll, uint16_t key) {
         return NULL;
     }
 
+    printf("Enter %s's key: ",node);
+    scanf("%hd", &key);
+
     Node* current = dll->head;
     while (current != NULL) {
         if (current->key == key && current->prev != NULL) {
             current = (Node*)current->prev;
-            printf("User found - Key: %d, Info: %s\n", current->key, current->data);
+            printf("User found - key: %d, %s: %s\n", current->key, node, current->data);
             return current->data;
         }
         current = (Node*)current->next;
     }
-    printf("There is no info before this one.\n");
+    printf("There is no %s before this one.\n", node);
     return NULL;
 }
 
@@ -162,9 +185,9 @@ uint8_t* MyDLLShowElements(DLL *dll) {
     }
 
     Node* current = dll->head;
-    printf("All info in the list: \n");
+    printf("All %s in the list: \n", node);
     while(current != NULL) {
-        printf("User #%d - Key: %d,\t Info: %s\n", n++, current->key, current->data);
+        printf("User #%d - key: %d,\t %s: %s\n", n++, current->key, node, current->data);
         current = (Node*)current->next;
     }
 }

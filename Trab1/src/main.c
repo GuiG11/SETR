@@ -38,35 +38,22 @@ int main(void) {
         switch (option) {
 
         case 1:
-            printf("Enter key: ");
-            scanf("%hd", &key);
-            printf("Enter %s: ",node);
-            while (getchar() != '\n');
-            fgets(data, MAX_DATA_SIZE, stdin);
             MyDLLInsert(&dll, key, data);
             printf("\n");
             break;
         case 2:
-            printf("Enter %s's key: ",node);
-            scanf("%hd", &key);
             MyDLLRemove(&dll, key);
             printf("\n");
             break;
         case 3:
-            printf("Enter %s's key: ",node);
-            scanf("%hd", &key);
             MyDLLFind(&dll, key);
             printf("\n");
             break;
         case 4:
-            printf("Enter %s's key: ",node);
-            scanf("%hd", &key);
             MyDLLFindNext(&dll, key);
             printf("\n");
             break;
         case 5:
-            printf("Enter %s's key: ",node);
-            scanf("%hd", &key);
             MyDLLFindPrev(&dll, key);
             printf("\n");
             break;
