@@ -1,30 +1,18 @@
 var indexSectionsWithContent =
 {
-  0: "dehkmnpt",
-  1: "dn",
-  2: "d",
-  3: "m",
-  4: "dehknpt",
-  5: "d"
+  0: "m",
+  1: "m"
 };
 
 var indexSectionNames =
 {
   0: "all",
-  1: "classes",
-  2: "files",
-  3: "functions",
-  4: "variables",
-  5: "groups"
+  1: "files"
 };
 
 var indexSectionLabels =
 {
   0: "All",
-  1: "Data Structures",
-  2: "Files",
-  3: "Functions",
-  4: "Variables",
-  5: "Modules"
+  1: "Files"
 };
 
