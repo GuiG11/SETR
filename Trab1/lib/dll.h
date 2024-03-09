@@ -26,7 +26,7 @@
  *   - Clearing all elements from the DLL.
  *   - Displaying all elements in the DLL.
  *
- *  \author Guilherme Guarino, Simão Pinto - 2024
+ *  \authors Guilherme Guarino 104154, Simão Pinto 102776 - 2024
  */
 
 

@@ -1,3 +1,13 @@
+/**
+* \file main.c
+* \brief Main function.
+* \details This module provides a menu where
+* user can choose if he wants add, remove or
+* search for data.
+*
+* \authors Guilherme Guarino 104154, Simão Pinto 102776 - 2024
+*/
+
 #include <stdlib.h>
 #include <stdio.h>
 
@@ -12,7 +22,7 @@ int main(void) {
     uint16_t key;
     char data[MAX_DATA_SIZE];
 
-    char node[] = "info";
+    char node[] = "info";  // Choose data type
 
     do {
         printf("\n------------------ MENU ------------------\n"
@@ -37,35 +47,35 @@ int main(void) {
 
         switch (option) {
 
-        case 1:
+        case 1:             /* Add data */
             MyDLLInsert(&dll, key, data);
             printf("\n");
             break;
-        case 2:
+        case 2:             /* Remove data */
             MyDLLRemove(&dll, key);
             printf("\n");
             break;
-        case 3:
+        case 3:             /* Find data */
             MyDLLFind(&dll, key);
             printf("\n");
             break;
-        case 4:
+        case 4:             /* Find next data */
             MyDLLFindNext(&dll, key);
             printf("\n");
             break;
-        case 5:
+        case 5:             /* Find previous data */
             MyDLLFindPrev(&dll, key);
             printf("\n");
             break;
-        case 6:
+        case 6:             /* Random Fill */
             MyDLLRandomFill(&dll);
             printf("\n");
             break;
-        case 7:
+        case 7:             /* Show list */
             MyDLLShowElements(&dll);
             printf("\n");
             break;
-        case 8:
+        case 8:             /* Clear list */
             MyDLLClear(&dll);
             printf("\n");
             break;
