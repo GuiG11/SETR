@@ -32,16 +32,17 @@ int main(void) {
                "04: Find the next %s in the list\n"
                "05: Find the previous %s in the list\n"
                "06: Randomly fill the list\n"
-               "07: Show entire list\n"
-               "08: Clear list\n"
+               "07: Sort list in ascending order\n" 
+               "08: Show entire list\n"
+               "09: Clear list\n"
                "00: Exit\n\n"
                "Please choose an option: ",node,node,node,node,node);
     
         do{
             scanf("%d", &option);
-            if (option < 0 || option > 8)
+            if (option < 0 || option > 9)
                 printf("Invalid option, try again: ");
-        } while (option < 0 || option > 8);
+        } while (option < 0 || option > 9);
         
         printf("\n");
 
@@ -71,11 +72,15 @@ int main(void) {
             MyDLLRandomFill(&dll);
             printf("\n");
             break;
-        case 7:             /* Show list */
+        case 7:             /* Sort list */
+            MyDLLAscendingOrder(&dll);
+            printf("\n");
+            break;
+        case 8:             /* Show list */
             MyDLLShowElements(&dll);
             printf("\n");
             break;
-        case 8:             /* Clear list */
+        case 9:             /* Clear list */
             MyDLLClear(&dll);
             printf("\n");
             break;

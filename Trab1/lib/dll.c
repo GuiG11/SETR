@@ -43,7 +43,7 @@ int MyDLLInsert(DLL *dll, uint16_t key, uint8_t data[]) {
     }
 
     printf("Add new data to the list: ");
-    while (getchar() != '\n');          // this line and the next were seen on a C programming website 
+    while (getchar() != '\n');          // This line and the next were seen on a C programming website 
     fgets(data, MAX_DATA_SIZE, stdin);  // to know how to read data with spaces
 
     // Gives the memory address of the next available node in the array 
@@ -226,6 +226,44 @@ void MyDLLRandomFill(DLL *dll) {
             break;
         }
     }
+}
+
+void MyDLLAscendingOrder(DLL *dll) {
+
+    if (dll->head == NULL) {
+        printf("The list is empty.\n");
+        return;
+    }
+
+    int swapped;
+    Node* current;
+    Node* last = NULL;
+
+    // Bubble Sort algorithm using some AI
+    do {
+        swapped = 0;
+        current = dll->head;
+
+        while ((Node*)current->next != last) {
+            Node* nextNode = (Node*)current->next;
+            if (current->key > nextNode->key) {
+                uint16_t temp_key = current->key;
+                current->key = nextNode->key;
+                nextNode->key = temp_key;
+
+                uint8_t temp_data[MAX_DATA_SIZE];
+                for (int i = 0; i < MAX_DATA_SIZE; i++) {
+                    temp_data[i] = current->data[i];
+                    current->data[i] = nextNode->data[i];
+                    nextNode->data[i] = temp_data[i];
+                }
+
+                swapped = 1;
+            }
+            current = (Node*)current->next;
+        }
+        last = current;
+    } while (swapped);
 }
 
 void MyDLLClear(DLL *dll) {

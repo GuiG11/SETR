@@ -160,6 +160,8 @@ uint8_t* MyDLLFindPrev(DLL *dll, uint16_t key);
 void MyDLLRandomFill(DLL *dll);
 
 
+void MyDLLAscendingOrder(DLL *dll);
+
 /**
  * \brief Displays all nodes in the DLL.
  * \details This function prints all nodes in the DLL along with their keys and data.
