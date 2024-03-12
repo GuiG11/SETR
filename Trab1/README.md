@@ -19,6 +19,7 @@ cd doc
 doxygen
 ```
 Then, you can display the pages running (inside the doc directory)
-
+```
 firefox html/index.html &
+```
 Of course, you can replace firefox with your favourite browser.
