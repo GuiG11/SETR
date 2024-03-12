@@ -52,6 +52,6 @@ Mkfile.old
 dkms.conf
 
 # Avoid folders
-#Trab1/doc
-#Trab1/doc/html
+Trab1/doc
+Trab1/doc/html
 Trab1/build
