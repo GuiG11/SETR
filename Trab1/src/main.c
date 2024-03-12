@@ -52,7 +52,7 @@ int main(void) {
 
         switch (option) {
 
-        case 1:             /* Add data */
+        case 1:             // Add data 
             if (dll.num_elements >= MAX_ELEMENTS) {
                 printf("Cannot insert more data. The list is full.\n");
                 break; // Avoids asking user for input if list is full
@@ -62,17 +62,17 @@ int main(void) {
             scanf("%hd", &key);
             
             printf("Add new %s to the list: ",node);
-            while (getchar() != '\n');          // This line and the next were seen on a C programming website 
-            fgets(data, MAX_DATA_SIZE, stdin);  // to know how to read data with spaces
+            while (getchar() != '\n');          
+            fgets(data, MAX_DATA_SIZE, stdin);  
 
             MyDLLInsert(&dll, key, data);
             printf("\n");
             break;
             
-        case 2:             /* Remove data */
+        case 2:             // Remove data 
             if (dll.head == NULL) {
                 printf("The list is empty.\n");
-                break;  // Avoids asking user for input if list is empty
+                break;  
             }
 
             printf("Enter user key: ");
@@ -82,10 +82,10 @@ int main(void) {
             printf("\n");
             break;
 
-        case 3:             /* Find data */
+        case 3:             // Find data 
             if (dll.head == NULL) {
                 printf("The list is empty.\n");
-                break;   // Avoids asking user for input if list is empty
+                break;  
             }
 
             printf("Enter user key: ");
@@ -95,10 +95,10 @@ int main(void) {
             printf("\n");
             break;
 
-        case 4:             /* Find next data */
+        case 4:             // Find next data 
             if (dll.head == NULL) {
                 printf("The list is empty.\n");
-                break;   // Avoids asking user for input if list is empty
+                break;  
             }
 
             printf("Enter user key: ");
@@ -108,10 +108,10 @@ int main(void) {
             printf("\n");
             break;
 
-        case 5:             /* Find previous data */
+        case 5:             // Find previous data 
             if (dll.head == NULL) {
                 printf("The list is empty.\n");
-                break;   // Avoids asking user for input if list is empty
+                break;   
             }
 
             printf("Enter user key: ");
@@ -121,7 +121,7 @@ int main(void) {
             printf("\n");
             break;
 
-        case 6:             /* Random Fill */
+        case 6:             // Random Fill 
             if (dll.num_elements >= MAX_ELEMENTS) {
                 printf("The list is full.\n");
                 break;
@@ -131,7 +131,7 @@ int main(void) {
             printf("\n");
             break;
 
-        case 7:             /* Sort list */
+        case 7:             // Sort list 
             if (dll.head == NULL) {
                 printf("The list is empty.\n");
                 break;
@@ -141,12 +141,12 @@ int main(void) {
             printf("\n");
             break;
 
-        case 8:             /* Show list */
+        case 8:             // Show list 
             MyDLLShowElements(&dll);
             printf("\n");
             break;
             
-        case 9:             /* Clear list */
+        case 9:             // Clear list 
             if (dll.head == NULL) {
                 printf("The list is empty.\n");
                 break;

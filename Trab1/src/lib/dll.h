@@ -167,9 +167,6 @@ void MyDLLRandomFill(DLL *dll);
  *          performing any operation.
  * 
  * \param dll Pointer to the DLL structure.
- * 
- * \note The Bubble Sort algorithm has a time complexity of O(n^2). 
- *       Consider using more efficient sorting algorithms for larger lists.
  */
 void MyDLLAscendingOrder(DLL *dll);
 
