@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.4"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Lab Assignment 1: /home/simaopedro/Secretária/SETR/SETR/Trab1/lib/dll.h Source File</title>
+<title>Lab Assignment 1: /home/simaopedro/Secretária/SETR/SETR/Trab1/src/lib/dll.h Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -137,13 +137,15 @@ $(document).ready(function(){initNavTree('dll_8h_source.html',''); initResizable
 <div class="line"><a id="l00160" name="l00160"></a><span class="lineno">  160</span><span class="keywordtype">void</span> <a class="code hl_function" href="group__dll.html#ga852f23c793cbe3d660320ef34a0f124f">MyDLLRandomFill</a>(<a class="code hl_struct" href="structDLL.html">DLL</a> *dll);</div>
 <div class="line"><a id="l00161" name="l00161"></a><span class="lineno">  161</span> </div>
 <div class="line"><a id="l00162" name="l00162"></a><span class="lineno">  162</span> </div>
-<div class="line"><a id="l00170" name="l00170"></a><span class="lineno">  170</span>uint8_t* <a class="code hl_function" href="group__dll.html#ga7c7804b0a9a36b00129b3836e5b77318">MyDLLShowElements</a>(<a class="code hl_struct" href="structDLL.html">DLL</a> *dll);</div>
-<div class="line"><a id="l00171" name="l00171"></a><span class="lineno">  171</span> </div>
-<div class="line"><a id="l00172" name="l00172"></a><span class="lineno">  172</span> </div>
-<div class="line"><a id="l00179" name="l00179"></a><span class="lineno">  179</span><span class="keywordtype">void</span> <a class="code hl_function" href="group__dll.html#ga5581d3ad5b66b8228ae0c26883ad99b9">MyDLLClear</a>(<a class="code hl_struct" href="structDLL.html">DLL</a> *dll);</div>
+<div class="line"><a id="l00163" name="l00163"></a><span class="lineno">  163</span><span class="keywordtype">void</span> MyDLLAscendingOrder(<a class="code hl_struct" href="structDLL.html">DLL</a> *dll);</div>
+<div class="line"><a id="l00164" name="l00164"></a><span class="lineno">  164</span> </div>
+<div class="line"><a id="l00172" name="l00172"></a><span class="lineno">  172</span>uint8_t* <a class="code hl_function" href="group__dll.html#ga7c7804b0a9a36b00129b3836e5b77318">MyDLLShowElements</a>(<a class="code hl_struct" href="structDLL.html">DLL</a> *dll);</div>
+<div class="line"><a id="l00173" name="l00173"></a><span class="lineno">  173</span> </div>
+<div class="line"><a id="l00174" name="l00174"></a><span class="lineno">  174</span> </div>
+<div class="line"><a id="l00181" name="l00181"></a><span class="lineno">  181</span><span class="keywordtype">void</span> <a class="code hl_function" href="group__dll.html#ga5581d3ad5b66b8228ae0c26883ad99b9">MyDLLClear</a>(<a class="code hl_struct" href="structDLL.html">DLL</a> *dll);</div>
 <div class="ttc" id="agroup__dll_html_ga01cdf7d109353094c1897ed9179a8c40"><div class="ttname"><a href="group__dll.html#ga01cdf7d109353094c1897ed9179a8c40">DLL::head</a></div><div class="ttdeci">Node * head</div><div class="ttdef"><b>Definition:</b> dll.h:73</div></div>
 <div class="ttc" id="agroup__dll_html_ga41301e14d67f2c3f0151b8f5fac66de9"><div class="ttname"><a href="group__dll.html#ga41301e14d67f2c3f0151b8f5fac66de9">MyDLLFindPrev</a></div><div class="ttdeci">uint8_t * MyDLLFindPrev(DLL *dll, uint16_t key)</div><div class="ttdoc">Finds the previous node in the DLL before the node with the specified key.</div><div class="ttdef"><b>Definition:</b> dll.c:157</div></div>
-<div class="ttc" id="agroup__dll_html_ga5581d3ad5b66b8228ae0c26883ad99b9"><div class="ttname"><a href="group__dll.html#ga5581d3ad5b66b8228ae0c26883ad99b9">MyDLLClear</a></div><div class="ttdeci">void MyDLLClear(DLL *dll)</div><div class="ttdoc">Clears all nodes from the DLL.</div><div class="ttdef"><b>Definition:</b> dll.c:231</div></div>
+<div class="ttc" id="agroup__dll_html_ga5581d3ad5b66b8228ae0c26883ad99b9"><div class="ttname"><a href="group__dll.html#ga5581d3ad5b66b8228ae0c26883ad99b9">MyDLLClear</a></div><div class="ttdeci">void MyDLLClear(DLL *dll)</div><div class="ttdoc">Clears all nodes from the DLL.</div><div class="ttdef"><b>Definition:</b> dll.c:269</div></div>
 <div class="ttc" id="agroup__dll_html_ga5f5da3716cb0577b984d317a802e9b04"><div class="ttname"><a href="group__dll.html#ga5f5da3716cb0577b984d317a802e9b04">MyDLLFind</a></div><div class="ttdeci">uint8_t * MyDLLFind(DLL *dll, uint16_t key)</div><div class="ttdoc">Finds a node in the DLL by key.</div><div class="ttdef"><b>Definition:</b> dll.c:113</div></div>
 <div class="ttc" id="agroup__dll_html_ga5fbab776f43e639b1562fb399bd4c84e"><div class="ttname"><a href="group__dll.html#ga5fbab776f43e639b1562fb399bd4c84e">MyDLLInsert</a></div><div class="ttdeci">int MyDLLInsert(DLL *dll, uint16_t key, uint8_t data[])</div><div class="ttdoc">Inserts a new node into the DLL.</div><div class="ttdef"><b>Definition:</b> dll.c:25</div></div>
 <div class="ttc" id="agroup__dll_html_ga664b295f0ed0f81f32540c13fbf2a81f"><div class="ttname"><a href="group__dll.html#ga664b295f0ed0f81f32540c13fbf2a81f">DLL::tail</a></div><div class="ttdeci">Node * tail</div><div class="ttdef"><b>Definition:</b> dll.h:74</div></div>
@@ -165,7 +167,7 @@ $(document).ready(function(){initNavTree('dll_8h_source.html',''); initResizable
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_83fd340ff71480251c07941f3e74582d.html">Secretária</a></li><li class="navelem"><a class="el" href="dir_6479e7fb9965ec49f39f55d2a9c16ed0.html">SETR</a></li><li class="navelem"><a class="el" href="dir_e1195e66b9d95ed39ed19d3fc5aeae30.html">SETR</a></li><li class="navelem"><a class="el" href="dir_0024431a0b72be789d3a7d9116dc2a7f.html">Trab1</a></li><li class="navelem"><a class="el" href="dir_f08758b2c5b5cef518011d63a1121e1e.html">lib</a></li><li class="navelem"><b>dll.h</b></li>
+    <li class="navelem"><a class="el" href="dir_83fd340ff71480251c07941f3e74582d.html">Secretária</a></li><li class="navelem"><a class="el" href="dir_6479e7fb9965ec49f39f55d2a9c16ed0.html">SETR</a></li><li class="navelem"><a class="el" href="dir_e1195e66b9d95ed39ed19d3fc5aeae30.html">SETR</a></li><li class="navelem"><a class="el" href="dir_0024431a0b72be789d3a7d9116dc2a7f.html">Trab1</a></li><li class="navelem"><a class="el" href="dir_351fc6003e1c8ba6594eec4ea26b9890.html">src</a></li><li class="navelem"><a class="el" href="dir_834e1ba2663ada31ffd484ac9bc2d161.html">lib</a></li><li class="navelem"><b>dll.h</b></li>
     <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.4 </li>
   </ul>
 </div>
