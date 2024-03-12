@@ -50,10 +50,11 @@ int MyDLLInsert(DLL *dll, uint16_t key, uint8_t data[])
         current = (Node*)current->next;
     }
 
-    // We tried using static allocation, but some problems occurred
+    // We tried using static allocation, but there was a bug when removing an element followed by inserting another one
+    // That bug aside, the program ran smoothly for every test performed even with static allocation
     // Node* newNode = &dll->elements[dll->num_elements];  
     
-    // Allocates memory for the new node and fills its data
+    // Allocates memory for the new node and fills its data, fixing the bug mentioned above
     Node* newNode = (Node*)malloc(sizeof(Node));
     newNode->key = key;
     for (int i = 0; i < MAX_DATA_SIZE; i++) {
