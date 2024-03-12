@@ -3,7 +3,7 @@
 * \brief Implementation of a Doubly Linked List (DLL) module.
 * \details This module provides functionalities to manipulate a Doubly Linked List (DLL).
 * It includes functions for initialization, insertion, removal, searching,
-* displaying elements, random filling, and clearing the DLL.
+* displaying elements, sorting elements, random filling, and clearing the DLL.
 *
 * \authors Guilherme Guarino 104154, Simão Pinto 102776 - 03/2024
 */
@@ -13,6 +13,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
+#include <stdbool.h>
 
 
 void MyDLLInit(DLL *dll) {
@@ -20,6 +21,14 @@ void MyDLLInit(DLL *dll) {
     dll->head = NULL;
     dll->tail = NULL;
     dll->num_elements = 0;
+}
+
+bool MyDLLisEmpty(DLL *dll){
+    if (dll->head == NULL) {
+        return true;
+    } else {
+        return false;
+    }
 }
 
 int MyDLLInsert(DLL *dll, uint16_t key, uint8_t data[]) {
@@ -48,7 +57,7 @@ int MyDLLInsert(DLL *dll, uint16_t key, uint8_t data[]) {
     newNode->prev = NULL;
     
     // If list is empty the node is both the head and tail 
-    if (dll->head == NULL) {  
+    if (MyDLLisEmpty(dll)) {  
         dll->head = newNode;
         dll->tail = newNode;  
     } else {
@@ -70,7 +79,7 @@ int MyDLLRemove(DLL *dll, uint16_t key) {
             // If node to be removed is the head
             if (current == dll->head) {
                 dll->head = (Node*)current->next;
-                if (dll->head != NULL) {
+                if (!MyDLLisEmpty(dll)) {
                     dll->head->prev = NULL; // If the list isn't empty, set the new head's prev pointer to NULL
                 }
             // If node to be removed is the tail
@@ -156,7 +165,7 @@ uint8_t* MyDLLShowElements(DLL *dll) {
 
     int n = 1;
 
-    if (dll->head == NULL) {
+    if (MyDLLisEmpty(dll)) {
         printf("The list is empty.\n");
         return NULL;
     }
@@ -167,8 +176,6 @@ uint8_t* MyDLLShowElements(DLL *dll) {
         printf("User #%d - Key: %d\t Data: %s\n", n++, current->key, current->data);
         current = (Node*)current->next;
     }
-
-    // bug when list is full, you remove 1 element then insert another and try to show list
 }
 
 void MyDLLRandomFill(DLL *dll) {
@@ -206,7 +213,7 @@ void MyDLLRandomFill(DLL *dll) {
 
 void MyDLLAscendingOrder(DLL *dll) {
 
-    if (dll->head == NULL) {
+    if (MyDLLisEmpty(dll)) {
         printf("The list is empty.\n");
         return;
     }

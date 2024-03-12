@@ -24,9 +24,9 @@ int main(void) {
     uint16_t key;
     char data[MAX_DATA_SIZE];
 
-    //////////////////////////////////////////////////
-    char node[] = "info";       // Choose data name //
-    //////////////////////////////////////////////////
+    ////////////////////////////////////////////////////
+    char node[] = "info";       /**< Choose data name */
+    ////////////////////////////////////////////////////
 
     do {
         printf("\n------------------ MENU ------------------\n"
@@ -70,10 +70,10 @@ int main(void) {
             break;
             
         case 2:             /* Remove data */
-            if (dll.head == NULL) {
+            if (MyDLLisEmpty(&dll)) {
                 printf("The list is empty.\n");
                 break;  // Avoids asking user for input if list is empty
-            }
+            } 
 
             printf("Enter user key: ");
             scanf("%hd", &key);
@@ -83,7 +83,7 @@ int main(void) {
             break;
 
         case 3:             /* Find data */
-            if (dll.head == NULL) {
+            if (MyDLLisEmpty(&dll)) {
                 printf("The list is empty.\n");
                 break;   // Avoids asking user for input if list is empty
             }
@@ -96,7 +96,7 @@ int main(void) {
             break;
 
         case 4:             /* Find next data */
-            if (dll.head == NULL) {
+            if (MyDLLisEmpty(&dll)) {
                 printf("The list is empty.\n");
                 break;   // Avoids asking user for input if list is empty
             }
@@ -109,7 +109,7 @@ int main(void) {
             break;
 
         case 5:             /* Find previous data */
-            if (dll.head == NULL) {
+            if (MyDLLisEmpty(&dll)) {
                 printf("The list is empty.\n");
                 break;   // Avoids asking user for input if list is empty
             }
@@ -132,7 +132,7 @@ int main(void) {
             break;
 
         case 7:             /* Sort list */
-            if (dll.head == NULL) {
+            if (MyDLLisEmpty(&dll)) {
                 printf("The list is empty.\n");
                 break;
             }
@@ -147,7 +147,7 @@ int main(void) {
             break;
             
         case 9:             /* Clear list */
-            if (dll.head == NULL) {
+            if (MyDLLisEmpty(&dll)) {
                 printf("The list is empty.\n");
                 break;
             }
