@@ -1,3 +1,13 @@
+/**
+* \file main.c
+* \brief Main function.
+* \details This module provides a menu where
+* user can choose if he wants add, remove or
+* search for data.
+*
+* \authors Guilherme Guarino 104154, Simão Pinto 102776 - 2024
+*/
+
 #include <stdlib.h>
 #include <stdio.h>
 
@@ -12,7 +22,7 @@ int main(void) {
     uint16_t key;
     char data[MAX_DATA_SIZE];
 
-    char node[] = "info";
+    char node[] = "info";  // Choose data type
 
     do {
         printf("\n------------------ MENU ------------------\n"
@@ -22,63 +32,55 @@ int main(void) {
                "04: Find the next %s in the list\n"
                "05: Find the previous %s in the list\n"
                "06: Randomly fill the list\n"
-               "07: Show entire list\n"
-               "08: Clear list\n"
+               "07: Sort list in ascending order\n" 
+               "08: Show entire list\n"
+               "09: Clear list\n"
                "00: Exit\n\n"
                "Please choose an option: ",node,node,node,node,node);
     
         do{
             scanf("%d", &option);
-            if (option < 0 || option > 8)
+            if (option < 0 || option > 9)
                 printf("Invalid option, try again: ");
-        } while (option < 0 || option > 8);
+        } while (option < 0 || option > 9);
         
         printf("\n");
 
         switch (option) {
 
-        case 1:
-            printf("Enter key: ");
-            scanf("%hd", &key);
-            printf("Enter %s: ",node);
-            while (getchar() != '\n');
-            fgets(data, MAX_DATA_SIZE, stdin);
+        case 1:             /* Add data */
             MyDLLInsert(&dll, key, data);
             printf("\n");
             break;
-        case 2:
-            printf("Enter %s's key: ",node);
-            scanf("%hd", &key);
+        case 2:             /* Remove data */
             MyDLLRemove(&dll, key);
             printf("\n");
             break;
-        case 3:
-            printf("Enter %s's key: ",node);
-            scanf("%hd", &key);
+        case 3:             /* Find data */
             MyDLLFind(&dll, key);
             printf("\n");
             break;
-        case 4:
-            printf("Enter %s's key: ",node);
-            scanf("%hd", &key);
+        case 4:             /* Find next data */
             MyDLLFindNext(&dll, key);
             printf("\n");
             break;
-        case 5:
-            printf("Enter %s's key: ",node);
-            scanf("%hd", &key);
+        case 5:             /* Find previous data */
             MyDLLFindPrev(&dll, key);
             printf("\n");
             break;
-        case 6:
+        case 6:             /* Random Fill */
             MyDLLRandomFill(&dll);
             printf("\n");
             break;
-        case 7:
+        case 7:             /* Sort list */
+            MyDLLAscendingOrder(&dll);
+            printf("\n");
+            break;
+        case 8:             /* Show list */
             MyDLLShowElements(&dll);
             printf("\n");
             break;
-        case 8:
+        case 9:             /* Clear list */
             MyDLLClear(&dll);
             printf("\n");
             break;
