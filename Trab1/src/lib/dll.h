@@ -22,11 +22,12 @@
  *   - Insertion of new elements.
  *   - Removal of elements by their keys.
  *   - Searching for elements by their keys.
+ *   - Sorting the elements of the DLL in ascending order based on their keys.
  *   - Randomly filling the DLL with elements.
  *   - Clearing all elements from the DLL.
  *   - Displaying all elements in the DLL.
  *
- *  \authors Guilherme Guarino 104154, Simão Pinto 102776 - 2024
+ *  \authors Guilherme Guarino 104154, Simão Pinto 102776 - 03/2024
  */
 
 
@@ -159,7 +160,17 @@ uint8_t* MyDLLFindPrev(DLL *dll, uint16_t key);
  */
 void MyDLLRandomFill(DLL *dll);
 
-
+/**
+ * \brief Sorts the elements of the DLL in ascending order based on their keys.
+ * \details This function sorts the elements of the DLL in ascending order based on their keys
+ *          using the Bubble Sort algorithm. If the DLL is empty, the function returns without
+ *          performing any operation.
+ * 
+ * \param dll Pointer to the DLL structure.
+ * 
+ * \note The Bubble Sort algorithm has a time complexity of O(n^2). 
+ *       Consider using more efficient sorting algorithms for larger lists.
+ */
 void MyDLLAscendingOrder(DLL *dll);
 
 /**

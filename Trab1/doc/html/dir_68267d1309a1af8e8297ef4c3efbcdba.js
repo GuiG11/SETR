@@ -1,5 +1,5 @@
 var dir_68267d1309a1af8e8297ef4c3efbcdba =
 [
-    [ "dll.c", "dll_8c.html", "dll_8c" ],
-    [ "dll.h", "dll_8h_source.html", null ]
+    [ "lib", "dir_c85d3e3c5052e9ad9ce18c6863244a25.html", "dir_c85d3e3c5052e9ad9ce18c6863244a25" ],
+    [ "main.c", "main_8c.html", "main_8c" ]
 ];
