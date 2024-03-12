@@ -58,10 +58,9 @@ int main(void) {
                 break; // Avoids asking user for input if list is full
             }
             
-            do{
-                printf("Enter user key: ");
-                while (getchar() != '\n');
-            }while(!scanf("%hd", &key));
+            printf("Enter user key: ");
+            scanf("%hd", &key);
+            
             printf("Add new %s to the list: ",node);
             while (getchar() != '\n');          // This line and the next were seen on a C programming website 
             fgets(data, MAX_DATA_SIZE, stdin);  // to know how to read data with spaces
@@ -76,10 +75,8 @@ int main(void) {
                 break;  // Avoids asking user for input if list is empty
             }
 
-            do{
-                printf("Enter user key: ");
-                while (getchar() != '\n');
-            }while(!scanf("%hd", &key));
+            printf("Enter user key: ");
+            scanf("%hd", &key);
 
             MyDLLRemove(&dll, key);
             printf("\n");
@@ -91,10 +88,8 @@ int main(void) {
                 break;   // Avoids asking user for input if list is empty
             }
 
-            do{
-                printf("Enter user key: ");
-                while (getchar() != '\n');
-            }while(!scanf("%hd", &key));
+            printf("Enter user key: ");
+            scanf("%hd", &key);
 
             MyDLLFind(&dll, key);
             printf("\n");
@@ -106,12 +101,9 @@ int main(void) {
                 break;   // Avoids asking user for input if list is empty
             }
 
-            do{
-                printf("Enter user key: ");
-                while (getchar() != '\n');
-            }while(!scanf("%hd", &key));
+            printf("Enter user key: ");
+            scanf("%hd", &key);
             
-
             MyDLLFindNext(&dll, key);
             printf("\n");
             break;
@@ -122,10 +114,8 @@ int main(void) {
                 break;   // Avoids asking user for input if list is empty
             }
 
-            do{
-                printf("Enter user key: ");
-                while (getchar() != '\n');
-            }while(!scanf("%hd", &key));
+            printf("Enter user key: ");
+            scanf("%hd", &key);
 
             MyDLLFindPrev(&dll, key);
             printf("\n");

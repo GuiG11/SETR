@@ -71,13 +71,13 @@ int MyDLLRemove(DLL *dll, uint16_t key) {
             if (current == dll->head) {
                 dll->head = (Node*)current->next;
                 if (dll->head != NULL) {
-                    dll->head->prev = NULL;
+                    dll->head->prev = NULL; // If the list isn't empty, set the new head's prev pointer to NULL
                 }
             // If node to be removed is the tail
             } else if (current == dll->tail) { 
                 dll->tail = (Node*)current->prev;
                 if (dll->tail != NULL) {
-                    dll->tail->next = NULL;
+                    dll->tail->next = NULL; // Set the new tail's next pointer to NULL
                 }
             } else {
                 ((Node *)current->prev)->next = current->next;
