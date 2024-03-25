@@ -8,7 +8,8 @@ int main()
 {   
     char choice;
 
-    randomFill();
+    // randomFill();
+    generateTestData();
 
     do {
         printf( "\nSelect 'A' to read real-time values of the variables provided by the sensor\n"

@@ -8,8 +8,72 @@
 void readAllData()
 {
     FILE *file;
+    int temp, humidity, CO2;
+    int lastTemp, lastHumidity, lastCO2;
+
+    // Abre o arquivo para leitura
+    file = fopen("values.csv", "r");
+
+    if (file == NULL) {
+        printf("Error opening file.\n");
+        return;
+    }
+
+    // Lê os valores até EOF
+    while (fscanf(file, "%d, %d, %d", &temp, &humidity, &CO2) == 3) {
+        lastTemp = temp;
+        lastHumidity = humidity;
+        lastCO2 = CO2;
+    }
+    
+    fclose(file);
+
+    printf("Real-time values:\n");
+    printf("Temperature: %d, Humidity: %d, CO2: %d\n", lastTemp, lastHumidity, lastCO2);
+}
+
+void readOneValue(char choice)
+{
+    FILE *file;
+    int temp, humidity, CO2;
+    int lastValue;
+
+    // Abre o arquivo para leitura
+    file = fopen("values.csv", "r");
+
+    if (file == NULL) {
+        printf("Error opening file.\n");
+        return;
+    }
+
+    // Lê os valores do tipo especificado até EOF
+    while (fscanf(file, "%d, %d, %d", &temp, &humidity, &CO2) == 3) {
+        switch (choice) {
+            case 'T':
+                lastValue = temp;
+                break;
+            case 'H':
+                lastValue = humidity;
+                break;
+            case 'C':
+                lastValue = CO2;
+                break;
+            default:
+                printf("Invalid value type.\n");
+                fclose(file);
+                return;
+        }
+    }
+
+    fclose(file);
+
+    printf("Real-time %c value: %d\n", choice, lastValue);
+}
+
+void returnLastSamples()
+{
+    FILE *file;
     char c;
-    int i = 0;
     Data values[MAX_DATA];
 
     // Abre o arquivo para leitura
@@ -18,125 +82,6 @@ void readAllData()
     if (file == NULL) {
         printf("Error opening file.\n");
         return;
-    }
-
-    // Ignora os caracteres até encontrar o marcador de início
-    while ((c = fgetc(file)) != '#') {
-        if (c == EOF) {
-            printf("Invalid file format.\n");
-            fclose(file);
-            return;
-        }
-    }
-
-    // Lê os valores até encontrar o marcador de fim
-    while (fscanf(file, "%d, %d, %d", &values[i].temp, &values[i].humidity, &values[i].CO2) == 3) {
-        i++;
-        if (i >= MAX_DATA) {
-            printf("Maximum value limit reached.\n");
-            break;
-        }
-    }
-
-    fclose(file);
-
-    // Exibe os valores lidos
-    printf("Reading values:\n");
-    for (int j = 0; j < i; j++) {
-        printf("Temperature: %d, Humidity: %d, CO2: %d\n", values[j].temp, values[j].humidity, values[j].CO2);
-    }
-}
-
-void readOneValue(char choice)
-{
-    FILE *file;
-    char c;
-    int temp, humidity, CO2;
-
-    // Determina qual valor será lido com base no tipo especificado
-    switch (choice) {
-        case 'T':
-            printf("Reading temperature values:\n");
-            break;
-        case 'H':
-            printf("Reading humidity values:\n");
-            break;
-        case 'C':
-            printf("Reading CO2 values:\n");
-            break;
-        default:
-            printf("Invalid value type.\n");
-            return;
-    }
-
-    // Abre o arquivo para leitura
-    file = fopen("values.csv", "r");
-
-    if (file == NULL) {
-        printf("Error opening file.\n");
-        return;
-    }
-
-    // Ignora os caracteres até encontrar o marcador de início
-    while ((c = fgetc(file)) != '#') {
-        if (c == EOF) {
-            printf("Invalid file format.\n");
-            fclose(file);
-            return;
-        }
-    }
-
-    // Lê os valores do tipo especificado
-    while (fscanf(file, "%d, %d, %d", &temp, &humidity, &CO2) == 3) {
-        // Dependendo do tipo especificado, exibe o valor correspondente
-        switch (choice) {
-            case 'T':
-                printf("Temperature: %d\n", temp);
-                break;
-            case 'H':
-                printf("Humidity: %d\n", humidity);
-                break;
-            case 'C':
-                printf("CO2: %d\n", CO2);
-                break;
-        }
-
-        // Lê o caractere de nova linha após o valor
-        fgetc(file);
-
-        // Verifica se encontrou o marcador de fim
-        if ((c = fgetc(file)) == '!') {
-            break;
-        } else {
-            // Move o cursor de volta para o início do próximo valor
-            fseek(file, -1, SEEK_CUR);
-        }
-    }
-
-    fclose(file);
-}
-
-void returnLastSamples()
-{
-    FILE *file;
-    char c;
-    Data values[MAX_SAMPLES];
-
-    // Abre o arquivo para leitura
-    file = fopen("values.csv", "r");
-
-    if (file == NULL) {
-        printf("Error opening file.\n");
-        return;
-    }
-
-    // Ignora os caracteres até encontrar o marcador de início
-    while ((c = fgetc(file)) != '#') {
-        if (c == EOF) {
-            printf("Invalid file format.\n");
-            fclose(file);
-            return;
-        }
     }
 
     // Conta o número total de amostras
@@ -154,15 +99,6 @@ void returnLastSamples()
 
     // Retrocede a posição do arquivo para o início das últimas 20 amostras
     rewind(file);
-
-    // Ignora os caracteres até encontrar o marcador de início novamente
-    while ((c = fgetc(file)) != '#') {
-        if (c == EOF) {
-            printf("Invalid file format.\n");
-            fclose(file);
-            return;
-        }
-    }
 
     // Avança até a posição inicial
     for (int i = 0; i < InitPos; i++) {
@@ -219,7 +155,6 @@ void randomFill()
     srand(time(NULL));
 
     // Escreve as leituras no arquivo
-    fprintf(file, "#\n"); // Marca de início
     for (int i = 0; i < MAX_DATA-1; i++) {
         // Gera valores aleatórios para temperatura, humidade e CO2
         int temp = rand() % (60 - (-50) + 1) + (-50);
@@ -229,8 +164,33 @@ void randomFill()
         // Escreve os valores no arquivo
         fprintf(file, "%d, %d, %d\n", temp, humidity, CO2);
     }
-    fprintf(file, "!\n"); // Marca de fim
 
     // Fecha o arquivo após escrever os valores
+    fclose(file);
+}
+
+void generateTestData() {
+    FILE *file;
+
+    // Open file for writing
+    file = fopen("values.csv", "w");
+
+    if (file == NULL) {
+        printf("Error opening file.\n");
+        return;
+    }
+
+    // Write test data
+    for (int i = 0; i < MAX_DATA; i++) {
+        // Generate PREDICTABLE sensor values
+        int temp = i % 60 - 50; // Temperature cycles from -50 to 59
+        int humidity = (i * 2) % 101; // Humidity cycles from 0 to 100
+        int CO2 = (i * 500) % 19501 + 400; // CO2 cycles from 400 to 20000
+
+        // Write values on file
+        fprintf(file, "%d, %d, %d\n", temp, humidity, CO2);
+    }
+
+    // Close file
     fclose(file);
 }

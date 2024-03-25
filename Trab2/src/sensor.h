@@ -24,4 +24,6 @@ void resetHistory();
 
 void randomFill();
 
+void generateTestData();
+
 #endif
