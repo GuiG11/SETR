@@ -34,6 +34,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdint.h>
+#include <stdbool.h>
 
 /** @{ */
 
@@ -84,6 +85,16 @@ typedef struct
  * \param dll Pointer to the DLL structure.
  */
 void MyDLLInit(DLL *dll);
+
+
+/**
+ * \brief Checks if the DLL is empty.
+ * \details This function checks if the DLL is empty by verifying if the head pointer is NULL.
+ * 
+ * \param dll Pointer to the DLL structure.
+ * \return \c true if the DLL is empty, \c false otherwise.
+ */
+bool MyDLLisEmpty(DLL *dll);
 
 
 /**
@@ -160,6 +171,7 @@ uint8_t* MyDLLFindPrev(DLL *dll, uint16_t key);
  */
 void MyDLLRandomFill(DLL *dll);
 
+
 /**
  * \brief Sorts the elements of the DLL in ascending order based on their keys.
  * \details This function sorts the elements of the DLL in ascending order based on their keys
@@ -167,11 +179,9 @@ void MyDLLRandomFill(DLL *dll);
  *          performing any operation.
  * 
  * \param dll Pointer to the DLL structure.
- * 
- * \note The Bubble Sort algorithm has a time complexity of O(n^2). 
- *       Consider using more efficient sorting algorithms for larger lists.
  */
 void MyDLLAscendingOrder(DLL *dll);
+
 
 /**
  * \brief Displays all nodes in the DLL.

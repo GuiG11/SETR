@@ -119,6 +119,9 @@ Functions</h2></td></tr>
 <tr class="memitem:ga7e40089da30029df31f64e56fe9eb165"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__dll.html#ga7e40089da30029df31f64e56fe9eb165">MyDLLInit</a> (<a class="el" href="structDLL.html">DLL</a> *dll)</td></tr>
 <tr class="memdesc:ga7e40089da30029df31f64e56fe9eb165"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes the <a class="el" href="structDLL.html" title="DLL structure.">DLL</a> data structure.  <a href="group__dll.html#ga7e40089da30029df31f64e56fe9eb165">More...</a><br /></td></tr>
 <tr class="separator:ga7e40089da30029df31f64e56fe9eb165"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga2c103285704c48815ff750879763007c"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__dll.html#ga2c103285704c48815ff750879763007c">MyDLLisEmpty</a> (<a class="el" href="structDLL.html">DLL</a> *dll)</td></tr>
+<tr class="memdesc:ga2c103285704c48815ff750879763007c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks if the <a class="el" href="structDLL.html" title="DLL structure.">DLL</a> is empty.  <a href="group__dll.html#ga2c103285704c48815ff750879763007c">More...</a><br /></td></tr>
+<tr class="separator:ga2c103285704c48815ff750879763007c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga5fbab776f43e639b1562fb399bd4c84e"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__dll.html#ga5fbab776f43e639b1562fb399bd4c84e">MyDLLInsert</a> (<a class="el" href="structDLL.html">DLL</a> *dll, uint16_t key, uint8_t data[])</td></tr>
 <tr class="memdesc:ga5fbab776f43e639b1562fb399bd4c84e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Inserts a new node into the <a class="el" href="structDLL.html" title="DLL structure.">DLL</a>.  <a href="group__dll.html#ga5fbab776f43e639b1562fb399bd4c84e">More...</a><br /></td></tr>
 <tr class="separator:ga5fbab776f43e639b1562fb399bd4c84e"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -210,11 +213,10 @@ Variables</h2></td></tr>
 <p>This function sorts the elements of the <a class="el" href="structDLL.html" title="DLL structure.">DLL</a> in ascending order based on their keys using the Bubble Sort algorithm. If the <a class="el" href="structDLL.html" title="DLL structure.">DLL</a> is empty, the function returns without performing any operation.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">dll</td><td>Pointer to the <a class="el" href="structDLL.html" title="DLL structure.">DLL</a> structure.</td></tr>
+    <tr><td class="paramname">dll</td><td>Pointer to the <a class="el" href="structDLL.html" title="DLL structure.">DLL</a> structure. </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section note"><dt>Note</dt><dd>The Bubble Sort algorithm has a time complexity of O(n^2). Consider using more efficient sorting algorithms for larger lists. </dd></dl>
 
 </div>
 </div>
@@ -432,6 +434,34 @@ Variables</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd><code>EXIT_SUCCESS</code> if insertion was successful, <code>EXIT_FAILURE</code> otherwise. </dd></dl>
+
+</div>
+</div>
+<a id="ga2c103285704c48815ff750879763007c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga2c103285704c48815ff750879763007c">&#9670;&nbsp;</a></span>MyDLLisEmpty()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool MyDLLisEmpty </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structDLL.html">DLL</a> *&#160;</td>
+          <td class="paramname"><em>dll</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Checks if the <a class="el" href="structDLL.html" title="DLL structure.">DLL</a> is empty. </p>
+<p>This function checks if the <a class="el" href="structDLL.html" title="DLL structure.">DLL</a> is empty by verifying if the head pointer is NULL.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">dll</td><td>Pointer to the <a class="el" href="structDLL.html" title="DLL structure.">DLL</a> structure. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd><code>true</code> if the <a class="el" href="structDLL.html" title="DLL structure.">DLL</a> is empty, <code>false</code> otherwise. </dd></dl>
 
 </div>
 </div>
