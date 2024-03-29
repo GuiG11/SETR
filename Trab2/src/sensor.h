@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <stdint.h>
 
-#define BUF_SIZE 128
+#define BUF_SIZE 33554432
 #define SOF_SYM '#'
 #define EOF_SYM '!'
 
@@ -32,7 +32,7 @@ void buffer_putc(unsigned char c);
 unsigned char buffer_getc();
 
 // Process received command
-void process_command();
+int process_command(unsigned char c, unsigned char ch);
 
 void uart_handler();
 

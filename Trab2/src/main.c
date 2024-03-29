@@ -9,46 +9,51 @@ int main()
     unsigned char c;
     init_buffer(); // Initialize buffer
 
-    printf( "Select 'A': Reads the real-time values of the variables provided by the sensor\n"
-            "Select 'P': Reads the real-time value of one of the sensors\n"
-            "Select 'L': Returns the last 20 samples of each variable\n"
-            "Select 'R': Resets the history\n"
-            "Choose: ");
-    scanf("%c", &c);
-    printf("\n");
+    do {
+        printf( "Select 'A': Reads the real-time values of the variables provided by the sensor\n"
+                "Select 'P': Reads the real-time value of one of the sensors\n"
+                "Select 'L': Returns the last 20 samples of each variable\n"
+                "Select 'R': Resets the history\n"
+                "Select 'E': Exit\n"
+                "Choose: ");
+        do {
+            scanf("%c", &c);
+            printf("\n");
+            getchar();
+            if (c != 'A' && c != 'P' && c != 'L' && c != 'R' && c != 'E') {
+                printf("Invalid option! Choose again: ");
+            }
+        } while (c != 'A' && c != 'P' && c != 'L' && c != 'R' && c != 'E');
 
-    // Open the file for reading
-    FILE *file = fopen("data.csv", "r");
-    if (file == NULL) {
-        printf("Error opening file!");
-        return -1;
-    }
-
-    // Read values from the file and put them into the buffer
-    int temp, humidity, co2;
-    while (fscanf(file, "%d, %d, %d", &temp, &humidity, &co2) == 3) {
-        buffer_putc(SOF_SYM);
-        buffer_putc(' '); 
-        buffer_putc(c);
-        buffer_putc(' '); 
-        char str_value[20];
-        snprintf(str_value, sizeof(str_value), "%d %d %d", temp, humidity, co2);
-        for (int i = 0; str_value[i] != '\0'; i++) {
-            buffer_putc((unsigned char)str_value[i]);
+        unsigned char ch;
+        if (c == 'P') {
+            printf( "Select 't': Reads the real-time value of the temperature\n"
+                   "Select 'h': Reads the real-time value of the humidity\n"
+                    "Select 'c': Reads the real-time value of the CO2\n"
+                    "Choose: ");
+            do {
+                scanf("%c", &ch);
+                printf("\n");
+                process_command(c, ch);
+                getchar();
+                if (ch != 't' && ch != 'h' && ch != 'c') {
+                    printf("Invalid option! Choose again: ");
+                }
+            } while (ch != 't' && ch != 'h' && ch != 'c');
+        } else {
+            process_command(c, ch);
         }
-        buffer_putc(' '); // Add space after each value
-        buffer_putc(EOF_SYM);
-        buffer_putc('\n');
-    }
-    fclose(file);
 
-    uart_handler();
+        uart_handler();
 
-    unsigned char received_char;
-    while ((received_char = buffer_getc())) {
-         printf("%c", received_char);
-    }
-    printf("\n");
+        unsigned char received_char;
+        while ((received_char = buffer_getc())) {
+            printf("%c", received_char);
+        }
+        printf("\n");
+
+    } while (c != 'E');
+    printf("Goodbye!\n");
 
     return 0;
 }

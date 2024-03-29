@@ -39,9 +39,69 @@ unsigned char buffer_getc()
 }
 
 // Process received command
-void process_command()
+int process_command(unsigned char c, unsigned char ch)
 {
+    // Open the file for reading
+    FILE *file = fopen("data.csv", "r");
+    if (file == NULL) {
+        printf("Error opening file!");
+        return -1;
+    }
 
+    int temp, humidity, co2;
+    char str_value[20];
+    switch (c)
+    {
+    case 'A':
+        // Read values from the file and put them into the buffer
+        while (fscanf(file, "%d, %d, %d", &temp, &humidity, &co2) == 3) {
+            buffer_putc(SOF_SYM);
+            buffer_putc(' '); // Add space after each value
+            buffer_putc(c);
+            buffer_putc(' '); 
+            sprintf(str_value, "%d %d %d", temp, humidity, co2);
+            for (int i = 0; str_value[i] != '\0'; i++) {
+                buffer_putc(str_value[i]);
+            }
+            buffer_putc(' '); 
+            buffer_putc(EOF_SYM);
+            buffer_putc('\n');
+        }
+        break;
+
+    case 'P':
+        while (fscanf(file, "%d, %d, %d", &temp, &humidity, &co2) == 3) {
+            buffer_putc(SOF_SYM);
+            buffer_putc(' '); 
+            buffer_putc(c);
+            buffer_putc(' '); 
+            buffer_putc(ch);
+            buffer_putc(' '); 
+                
+            if (ch == 't') {
+                sprintf(str_value, "%d", temp);
+            }
+            else if (ch == 'h') {
+                sprintf(str_value, "%d", humidity);
+            }
+            else if (ch == 'c') {
+                sprintf(str_value, "%d", co2);
+            }
+
+            for (int i = 0; str_value[i] != '\0'; i++) {
+                buffer_putc(str_value[i]);
+            }
+            buffer_putc(' '); 
+            buffer_putc(EOF_SYM);
+            buffer_putc('\n');
+        }
+        break;
+
+    default:
+        break;
+    }
+
+    fclose(file);
 }
 
 void uart_handler()
