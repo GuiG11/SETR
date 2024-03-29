@@ -6,74 +6,49 @@
 
 int main() 
 {   
-    char choice;
+    unsigned char c;
+    init_buffer(); // Initialize buffer
 
-    randomFill();
+    printf( "Select 'A': Reads the real-time values of the variables provided by the sensor\n"
+            "Select 'P': Reads the real-time value of one of the sensors\n"
+            "Select 'L': Returns the last 20 samples of each variable\n"
+            "Select 'R': Resets the history\n"
+            "Choose: ");
+    scanf("%c", &c);
+    printf("\n");
 
-    do {
-        printf( "\nSelect 'A' to read real-time values of the variables provided by the sensor\n"
-                "Select 'P' to read real-time value of one of the sensors\n"
-                "Select 'L' to see the last 20 samples of each variable\n"
-                "Select 'R' to reset the history\n"
-                "Select 'E' to exit\n\n"
-                "Choose: ");
+    buffer_putc(SOF_SYM);
+    buffer_putc(' '); // Add space after each value
+    buffer_putc(c);
+    buffer_putc(' '); // Add space after each value
 
-        do 
-        {        
-            scanf("%c", &choice);
-            getchar();
-            if (choice != 'A' && choice != 'P' && choice != 'L' && choice != 'R' && choice != 'E') {
-                printf("Invalid option! Choose again: ");
-            }
+    // Open the file for reading
+    FILE *file = fopen("data.txt", "r");
+    if (file == NULL) {
+        printf("Error opening file!");
+        return -1;
+    }
 
-        } while (choice != 'A' && choice != 'P' && choice != 'L' && choice != 'R' && choice != 'E'); 
-
-        switch (choice)
-        {
-        case 'A':
-            // lê todos os valores registados pelo sensor
-            readAllData();
-            break;
-
-        case 'P':
-            // lê um dos valores registados pelo sensor
-            printf( "\nSelect 'T' if you want to read temperature values\n"
-                    "Select 'H' if you want to read humidity values\n"
-                    "Select 'C' if you want to read CO2 values\n\n"
-                    "Choose: ");
-
-            do 
-            {        
-                scanf("%c", &choice);
-                getchar();
-                if (choice != 'T' && choice != 'H' && choice != 'C') {
-                    printf("Invalid option! Choose again: ");
-                }
-
-            } while (choice != 'T' && choice != 'H' && choice != 'C');  
-
-            readOneValue(choice);      
-            break;
-
-        case 'L':
-            // retorna as últimas 20 amostras dos valores lidos pelo sensor
-            returnLastSamples();
-            break;
-
-        case 'R':
-            // limpa o histórico
-            resetHistory();
-            break;        
-
-        case 'E':
-            printf("Goodbye!\n");
-            break;
-
-        default:
-            break;
+    // Read values from the file and put them into the buffer
+    int value;
+    while (fscanf(file, "%d", &value) == 1) {
+        char str_value[20];
+        snprintf(str_value, sizeof(str_value), "%d", value);
+        for (int i = 0; str_value[i] != '\0'; i++) {
+            buffer_putc((unsigned char)str_value[i]);
         }
+        buffer_putc(' '); // Add space after each value
+    }
 
-    } while (choice != 'E');
+    buffer_putc(EOF_SYM);
+
+    uart_handler();
+
+    unsigned char received_char;
+    while ((received_char = buffer_getc())) {
+         printf("%c", received_char);
+    }
+    printf("\n");
 
     return 0;
 }

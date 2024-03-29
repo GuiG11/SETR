@@ -3,25 +3,45 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
 
-#define MAX_DATA 50
-#define MAX_SAMPLES 20
+#define BUF_SIZE 32
+#define SOF_SYM '#'
+#define EOF_SYM '!'
 
-typedef struct 
-{
-    int temp;
-    int humidity;
-    int CO2;
-} Data;
+// UART circular buffer structure
+typedef struct {
+    unsigned char data[BUF_SIZE];
+    unsigned int head;
+    unsigned int tail;
+    unsigned int count;
+} circularBuffer;
 
-void readAllData();
 
-void readOneValue(char choice);
+// UART reception and transmission buffers
+static circularBuffer rxb; // Reception buffer
+static circularBuffer txb; // Transmission buffer
 
-void returnLastSamples();
+typedef struct {
+    int32_t temp;
+    int32_t humidity;
+    int32_t CO2;
+} SensorData;
 
-void resetHistory();
+// Initialize circular buffer
+void init_buffer();
 
-void randomFill();
+// Put a character into the buffer
+void buffer_putc(unsigned char c);
 
-#endif
+// Get a character from the buffer
+unsigned char buffer_getc();
+
+// Process received command
+void process_command(uint8_t cmd, SensorData *sensor_data, uint8_t data_length);
+
+void uart_handler();
+
+int calc_checksum();
+
+# endif
