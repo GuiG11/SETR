@@ -39,14 +39,14 @@ unsigned char buffer_getc()
 }
 
 // Process received command
-void process_command(uint8_t cmd, SensorData *sensor_data, uint8_t data_length)
+void process_command()
 {
 
 }
 
 void uart_handler()
 {
-      while (txb.count > 0) {
+    while (txb.count > 0) {
         rxb.data[rxb.tail] = txb.data[txb.head];
         rxb.tail = (rxb.tail + 1) % BUF_SIZE;
         rxb.count++;

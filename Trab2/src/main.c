@@ -17,30 +17,30 @@ int main()
     scanf("%c", &c);
     printf("\n");
 
-    buffer_putc(SOF_SYM);
-    buffer_putc(' '); 
-    buffer_putc(c);
-    buffer_putc(' '); 
-
     // Open the file for reading
-    FILE *file = fopen("data.txt", "r");
+    FILE *file = fopen("data.csv", "r");
     if (file == NULL) {
         printf("Error opening file!");
         return -1;
     }
 
     // Read values from the file and put them into the buffer
-    int value;
-    while (fscanf(file, "%d", &value) == 3) {
+    int temp, humidity, co2;
+    while (fscanf(file, "%d, %d, %d", &temp, &humidity, &co2) == 3) {
+        buffer_putc(SOF_SYM);
+        buffer_putc(' '); 
+        buffer_putc(c);
+        buffer_putc(' '); 
         char str_value[20];
-        snprintf(str_value, sizeof(str_value), "%d", value);
+        snprintf(str_value, sizeof(str_value), "%d %d %d", temp, humidity, co2);
         for (int i = 0; str_value[i] != '\0'; i++) {
             buffer_putc((unsigned char)str_value[i]);
         }
         buffer_putc(' '); // Add space after each value
+        buffer_putc(EOF_SYM);
+        buffer_putc('\n');
     }
-
-    buffer_putc(EOF_SYM);
+    fclose(file);
 
     uart_handler();
 
