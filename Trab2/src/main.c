@@ -18,9 +18,9 @@ int main()
     printf("\n");
 
     buffer_putc(SOF_SYM);
-    buffer_putc(' '); // Add space after each value
+    buffer_putc(' '); 
     buffer_putc(c);
-    buffer_putc(' '); // Add space after each value
+    buffer_putc(' '); 
 
     // Open the file for reading
     FILE *file = fopen("data.txt", "r");
@@ -31,7 +31,7 @@ int main()
 
     // Read values from the file and put them into the buffer
     int value;
-    while (fscanf(file, "%d", &value) == 1) {
+    while (fscanf(file, "%d", &value) == 3) {
         char str_value[20];
         snprintf(str_value, sizeof(str_value), "%d", value);
         for (int i = 0; str_value[i] != '\0'; i++) {
