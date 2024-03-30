@@ -1,3 +1,14 @@
+/**
+ * \file sensor.c
+ * \brief Implementation of the Smart Sensor Module.
+ * \details This module provides functionalities to process commands received via UART
+ * and emulate sensor readings for temperature, humidity, and CO2 levels.
+ * It includes functions for initialization, command processing, UART handling,
+ * checksum calculation, and sensor emulation.
+ * 
+ * \authors Guilherme Guarino 104154, Simão Pinto 102776 - 03/2024
+ */
+ 
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -121,7 +132,7 @@ int process_command(unsigned char c, unsigned char ch)
         break;
 
     case 'L':
-        // Count the total number of samples
+        /* Count the total number of samples
         int totalSamples = 0;
         while (fscanf(file, "%d, %d, %d", &temp, &humidity, &co2) == 3) {
             totalSamples++;
@@ -158,7 +169,7 @@ int process_command(unsigned char c, unsigned char ch)
             buffer_putc('\n');
         }
         break;
-
+*/
     case 'R':
         init_buffer();
         printf("Resets the history!\n");

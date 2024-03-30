@@ -1,3 +1,14 @@
+/**
+* \file main.c
+* \brief Main function.
+* \details This module provides a menu where the user can choose if they want to read real-time data variables from the sensor,
+* return the last 20 samples of each variable or reset the data history.
+* They are also able to specify which variable they would like to read if not interested in reading all the variables.
+* This module uses the functions implemented in \c sensor.c for these operations.
+*
+* \authors Guilherme Guarino 104154, Simão Pinto 102776 - 03/2024
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -34,12 +45,12 @@ int main()
             do {
                 scanf("%c", &ch);
                 printf("\n");
-                process_command(c, ch);
                 getchar();
                 if (ch != 't' && ch != 'h' && ch != 'c') {
                     printf("Invalid option! Choose again: ");
                 }
             } while (ch != 't' && ch != 'h' && ch != 'c');
+            process_command(c, ch);
         } else {
             process_command(c, ch);
         }
