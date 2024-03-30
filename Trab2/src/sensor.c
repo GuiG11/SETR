@@ -98,22 +98,23 @@ int process_command(unsigned char c, unsigned char ch)
         break;
 
     case 'L':
+        // Count the total number of samples
         int totalSamples = 0;
         while (fscanf(file, "%d, %d, %d", &temp, &humidity, &co2) == 3) {
             totalSamples++;
         }
-
+        // Calculate the starting position to read the last 20 samples
         int InitPos = totalSamples - LAST_SAMPLES;
         if (InitPos < 0) {
-            InitPos = 0; 
+            InitPos = 0; // If there are fewer than 20 samples, start from the beginning
         }
-
+        // Rewind the file position to the beginning of the last 20 samples
         rewind(file);
-
+        // Move to the initial position
         for (int i = 0; i < InitPos; i++) {
-            fscanf(file, "%*d, %*d, %*d"); 
+            fscanf(file, "%*d, %*d, %*d"); // Ignore sample values
         }   
-
+        // Read the last 20 samples
         Data values[20];
         int counter = 0;
         while (counter < LAST_SAMPLES && fscanf(file, "%d, %d, %d", &values[counter].temp, &values[counter].humidity, &values[counter].co2) == 3) {
