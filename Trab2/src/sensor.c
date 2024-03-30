@@ -50,6 +50,7 @@ int process_command(unsigned char c, unsigned char ch)
 
     int temp, humidity, co2;
     char str_value[20];
+    char checksum_str[5];
     switch (c)
     {
     case 'A':
@@ -59,9 +60,21 @@ int process_command(unsigned char c, unsigned char ch)
             buffer_putc(' '); // Add space after each value
             buffer_putc(c);
             buffer_putc(' '); 
-            sprintf(str_value, "%d %d %d", temp, humidity, co2);
+            // Convert values to formatted string
+            if (temp >= 0)
+                sprintf(str_value, "+%d %d %d", temp, humidity, co2);
+            else
+                sprintf(str_value, "%d %d %d", temp, humidity, co2);
+
             for (int i = 0; str_value[i] != '\0'; i++) {
                 buffer_putc(str_value[i]);
+            }
+            buffer_putc(' ');
+            int checksum = calc_checksum('A', str_value);
+            // Convert checksum to string
+            sprintf(checksum_str, "%d", checksum);
+            for (int i = 0; checksum_str[i] != '\0'; i++) {
+                buffer_putc(checksum_str[i]);
             }
             buffer_putc(' '); 
             buffer_putc(EOF_SYM);
@@ -91,6 +104,16 @@ int process_command(unsigned char c, unsigned char ch)
             for (int i = 0; str_value[i] != '\0'; i++) {
                 buffer_putc(str_value[i]);
             }
+
+            buffer_putc(' '); 
+
+            int checksum = calc_checksum('P', str_value);
+            // Convert checksum to string
+            sprintf(checksum_str, "%d", checksum);
+            for (int i = 0; checksum_str[i] != '\0'; i++) {
+                buffer_putc(checksum_str[i]);
+            }
+
             buffer_putc(' '); 
             buffer_putc(EOF_SYM);
             buffer_putc('\n');
@@ -115,7 +138,15 @@ void uart_handler()
     }
 }
 
-int calc_checksum()
-{
+int calc_checksum(unsigned char cmd, const char *data) {
+    int checksum = 0;
 
+    checksum += cmd;
+    while (*data != '\0') {
+        if (*data != ' ')
+            checksum += *data;
+        data++;
+    }
+
+    return checksum;
 }

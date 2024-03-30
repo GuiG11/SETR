@@ -36,6 +36,6 @@ int process_command(unsigned char c, unsigned char ch);
 
 void uart_handler();
 
-int calc_checksum();
+int calc_checksum(unsigned char cmd, const char *data);
 
 # endif

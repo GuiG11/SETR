@@ -15,7 +15,7 @@ int main()
                 "Select 'L': Returns the last 20 samples of each variable\n"
                 "Select 'R': Resets the history\n"
                 "Select 'E': Exit\n"
-                "Choose: ");
+                "Choose a command: ");
         do {
             scanf("%c", &c);
             printf("\n");
