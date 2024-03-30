@@ -3,8 +3,8 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdint.h>
 
+#define LAST_SAMPLES 20
 #define BUF_SIZE 33554432
 #define SOF_SYM '#'
 #define EOF_SYM '!'
@@ -17,6 +17,11 @@ typedef struct {
     unsigned int count;
 } circularBuffer;
 
+typedef struct {
+    int temp;
+    unsigned int humidity;
+    unsigned int co2;
+} Data;
 
 // UART reception and transmission buffers
 static circularBuffer rxb; // Reception buffer

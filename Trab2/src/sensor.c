@@ -97,6 +97,49 @@ int process_command(unsigned char c, unsigned char ch)
         }
         break;
 
+    case 'L':
+        int totalSamples = 0;
+        while (fscanf(file, "%d, %d, %d", &temp, &humidity, &co2) == 3) {
+            totalSamples++;
+        }
+
+        int InitPos = totalSamples - LAST_SAMPLES;
+        if (InitPos < 0) {
+            InitPos = 0; 
+        }
+
+        rewind(file);
+
+        for (int i = 0; i < InitPos; i++) {
+            fscanf(file, "%*d, %*d, %*d"); 
+        }   
+
+        Data values[20];
+        int counter = 0;
+        while (counter < LAST_SAMPLES && fscanf(file, "%d, %d, %d", &values[counter].temp, &values[counter].humidity, &values[counter].co2) == 3) {
+            counter++;
+        }
+
+        for (int i = counter-1; i >= 0; i--) {    
+            buffer_putc(SOF_SYM);
+            buffer_putc(' '); 
+            buffer_putc(c);
+            buffer_putc(' '); 
+            sprintf(str_value, "%d %d %d", values[i].temp, values[i].humidity, values[i].co2);
+            for (int j = 0; str_value[j] != '\0'; j++) {
+                buffer_putc(str_value[j]);
+            }
+            buffer_putc(' '); 
+            buffer_putc(EOF_SYM);
+            buffer_putc('\n');
+        }
+        break;
+
+    case 'R':
+        init_buffer();
+        printf("Resets the history!\n");
+        break;    
+
     default:
         break;
     }
