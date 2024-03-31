@@ -9,6 +9,7 @@ add_subdirectory(lib)
 
 # Add the executable
 add_executable(main main.c)
+add_executable(test test.c)
 
 # Generate variables with set of libs and include folders
 # Dependencies for libraries files are automatically set 
@@ -19,6 +20,8 @@ configure_file(data.csv ${CMAKE_CURRENT_BINARY_DIR}/data.csv COPYONLY)
 # Specify libraries or flags to use when linking a given target 
 # and/or its dependents
 target_link_libraries(main PUBLIC ${EXTRA_LIBS})
+target_link_libraries(test PUBLIC ${EXTRA_LIBS})
 
 # Specifies include directories to use when compiling a given target
 target_include_directories(main PUBLIC ${EXTRA_INCLUDES})
+target_include_directories(test PUBLIC ${EXTRA_INCLUDES})

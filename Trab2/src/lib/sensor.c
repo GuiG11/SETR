@@ -13,6 +13,7 @@
 #include <stdlib.h>
 
 #include "sensor.h"
+#include "unity.h"
 
 // Initialize circular buffer
 void init_buffer()

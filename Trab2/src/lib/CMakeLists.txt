@@ -1,6 +1,6 @@
 # Set the source files that make up the library
 set(sensor_SRCS
-   sensor.h sensor.c
+   sensor.h sensor.c unity_internals.h unity.h unity.c
 )
 
 # Set the library type (can be static or dynamic )
