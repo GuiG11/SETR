@@ -132,7 +132,7 @@ int process_command(unsigned char c, unsigned char ch)
         break;
 
     case 'L':
-        /* Count the total number of samples
+        // Count the total number of samples
         int totalSamples = 0;
         while (fscanf(file, "%d, %d, %d", &temp, &humidity, &co2) == 3) {
             totalSamples++;
@@ -164,12 +164,19 @@ int process_command(unsigned char c, unsigned char ch)
             for (int j = 0; str_value[j] != '\0'; j++) {
                 buffer_putc(str_value[j]);
             }
+            buffer_putc(' ');
+            int checksum = calc_checksum('L', str_value);
+            // Convert checksum to string
+            sprintf(checksum_str, "%d", checksum);
+            for (int i = 0; checksum_str[i] != '\0'; i++) {
+                buffer_putc(checksum_str[i]);
+            }
             buffer_putc(' '); 
             buffer_putc(EOF_SYM);
             buffer_putc('\n');
         }
         break;
-*/
+
     case 'R':
         init_buffer();
         printf("Resets the history!\n");
