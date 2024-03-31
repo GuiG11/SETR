@@ -18,6 +18,7 @@
 int main() 
 {   
     unsigned char c;
+    unsigned char ch;
     init_buffer(); // Initialize buffer
 
     do {
@@ -36,8 +37,20 @@ int main()
             }
         } while (c != 'A' && c != 'P' && c != 'L' && c != 'R' && c != 'E');
 
-        unsigned char ch;
-        if (c == 'P') {
+        switch (c)
+        {
+        case 'A':
+            buffer_putc(SOF_SYM);
+            buffer_putc(' '); // Add space after each value
+            buffer_putc(c);
+            buffer_putc(' '); 
+            process_command(c, ch);
+            buffer_putc(' '); 
+            buffer_putc(EOF_SYM);
+            buffer_putc('\n');
+            break;
+        
+        case 'P':
             printf( "Select 't': Reads the real-time value of the temperature\n"
                    "Select 'h': Reads the real-time value of the humidity\n"
                     "Select 'c': Reads the real-time value of the CO2\n"
@@ -50,9 +63,29 @@ int main()
                     printf("Invalid option! Choose again: ");
                 }
             } while (ch != 't' && ch != 'h' && ch != 'c');
+
+            buffer_putc(SOF_SYM);
+            buffer_putc(' '); // Add space after each value
+            buffer_putc(c);
+            buffer_putc(' '); 
+            buffer_putc(ch);
+            buffer_putc(' '); 
             process_command(c, ch);
-        } else {
+            buffer_putc(' '); 
+            buffer_putc(EOF_SYM);
+            buffer_putc('\n');
+            break;
+
+        case 'L':
             process_command(c, ch);
+            break;
+
+        case 'R':
+            process_command(c, ch);
+            break;
+
+        default:
+            break;
         }
 
         uart_handler();
