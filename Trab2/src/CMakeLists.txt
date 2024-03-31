@@ -4,7 +4,7 @@ cmake_minimum_required(VERSION 3.10)
 # Set the project name
 project(SmartSensor)
 
-# Add the dllLib folder to the build
+# Add the sensorLib folder to the build
 add_subdirectory(lib)
 
 # Add the executable
@@ -14,6 +14,7 @@ add_executable(main main.c)
 # Dependencies for libraries files are automatically set 
 list(APPEND EXTRA_LIBS sensorLib)
 list(APPEND EXTRA_INCLUDES "${CMAKE_SOURCE_DIR}/lib")
+configure_file(data.csv ${CMAKE_CURRENT_BINARY_DIR}/data.csv COPYONLY)
 
 # Specify libraries or flags to use when linking a given target 
 # and/or its dependents
