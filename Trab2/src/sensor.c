@@ -62,48 +62,62 @@ int process_command(unsigned char c, unsigned char ch)
     int temp, humidity, co2;
     char str_value[20];
     char checksum_str[5];
+    int totalSamples = 0;
+    int finalPos, checksum;
     switch (c)
     {
     case 'A':
         // Read values from the file and put them into the buffer
         while (fscanf(file, "%d, %d, %d", &temp, &humidity, &co2) == 3) {
-            buffer_putc(SOF_SYM);
-            buffer_putc(' '); // Add space after each value
-            buffer_putc(c);
-            buffer_putc(' '); 
-            // Convert values to formatted string
+            totalSamples++;
+        }
+        buffer_putc(SOF_SYM);
+        buffer_putc(' '); // Add space after each value
+        buffer_putc(c);
+        buffer_putc(' '); 
+
+        finalPos = totalSamples;
+        // Convert values to formatted string
+        for (int i = 0; i < finalPos; i++) {
             if (temp >= 0)
                 sprintf(str_value, "+%d %d %d", temp, humidity, co2);
             else
                 sprintf(str_value, "%d %d %d", temp, humidity, co2);
-
-            for (int i = 0; str_value[i] != '\0'; i++) {
-                buffer_putc(str_value[i]);
-            }
-            buffer_putc(' ');
-            int checksum = calc_checksum('A', str_value);
-            // Convert checksum to string
-            sprintf(checksum_str, "%d", checksum);
-            for (int i = 0; checksum_str[i] != '\0'; i++) {
-                buffer_putc(checksum_str[i]);
-            }
-            buffer_putc(' '); 
-            buffer_putc(EOF_SYM);
-            buffer_putc('\n');
         }
+     
+        for (int i = 0; str_value[i] != '\0'; i++) {
+            buffer_putc(str_value[i]);
+        }
+        buffer_putc(' ');
+        checksum = calc_checksum('A', str_value);
+        // Convert checksum to string
+        sprintf(checksum_str, "%d", checksum);
+        for (int i = 0; checksum_str[i] != '\0'; i++) {
+            buffer_putc(checksum_str[i]);
+        }
+        buffer_putc(' '); 
+        buffer_putc(EOF_SYM);
+        buffer_putc('\n');
         break;
 
     case 'P':
-        while (fscanf(file, "%d, %d, %d", &temp, &humidity, &co2) == 3) {
-            buffer_putc(SOF_SYM);
-            buffer_putc(' '); 
-            buffer_putc(c);
-            buffer_putc(' '); 
-            buffer_putc(ch);
-            buffer_putc(' '); 
-                
+         while (fscanf(file, "%d, %d, %d", &temp, &humidity, &co2) == 3) {
+            totalSamples++;
+        }
+        buffer_putc(SOF_SYM);
+        buffer_putc(' '); 
+        buffer_putc(c);
+        buffer_putc(' '); 
+        buffer_putc(ch);
+        buffer_putc(' '); 
+
+        finalPos = totalSamples;
+        for (int i = 0; i < finalPos; i++) {       
             if (ch == 't') {
-                sprintf(str_value, "%d", temp);
+                if (temp >= 0)
+                    sprintf(str_value, "+%d", temp);
+                else
+                    sprintf(str_value, "%d", temp);
             }
             else if (ch == 'h') {
                 sprintf(str_value, "%d", humidity);
@@ -111,29 +125,26 @@ int process_command(unsigned char c, unsigned char ch)
             else if (ch == 'c') {
                 sprintf(str_value, "%d", co2);
             }
-
-            for (int i = 0; str_value[i] != '\0'; i++) {
-                buffer_putc(str_value[i]);
-            }
-
-            buffer_putc(' '); 
-
-            int checksum = calc_checksum('P', str_value);
-            // Convert checksum to string
-            sprintf(checksum_str, "%d", checksum);
-            for (int i = 0; checksum_str[i] != '\0'; i++) {
-                buffer_putc(checksum_str[i]);
-            }
-
-            buffer_putc(' '); 
-            buffer_putc(EOF_SYM);
-            buffer_putc('\n');
         }
+
+        for (int i = 0; str_value[i] != '\0'; i++) {
+            buffer_putc(str_value[i]);
+        }
+        
+        buffer_putc(' '); 
+        checksum = calc_checksum('P', str_value);
+        // Convert checksum to string
+        sprintf(checksum_str, "%d", checksum);
+        for (int i = 0; checksum_str[i] != '\0'; i++) {
+            buffer_putc(checksum_str[i]);
+        }
+        buffer_putc(' '); 
+        buffer_putc(EOF_SYM);
+        buffer_putc('\n');
         break;
 
     case 'L':
         // Count the total number of samples
-        int totalSamples = 0;
         while (fscanf(file, "%d, %d, %d", &temp, &humidity, &co2) == 3) {
             totalSamples++;
         }
@@ -160,7 +171,10 @@ int process_command(unsigned char c, unsigned char ch)
             buffer_putc(' '); 
             buffer_putc(c);
             buffer_putc(' '); 
-            sprintf(str_value, "%d %d %d", values[i].temp, values[i].humidity, values[i].co2);
+            if (values[i].temp >= 0)
+                sprintf(str_value, "+%d %d %d", values[i].temp, values[i].humidity, values[i].co2);
+            else
+                sprintf(str_value, "%d %d %d", values[i].temp, values[i].humidity, values[i].co2);
             for (int j = 0; str_value[j] != '\0'; j++) {
                 buffer_putc(str_value[j]);
             }
