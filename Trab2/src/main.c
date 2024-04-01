@@ -75,7 +75,7 @@ int main()
         uart_handler();
 
         unsigned char received_char;
-        while ((received_char = buffer_getc())) {
+        while (received_char = buffer_getc()) {
             printf("%c", received_char);
         }
         printf("\n");

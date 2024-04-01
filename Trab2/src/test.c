@@ -38,11 +38,68 @@ void tearDown(void)
 
 }
 
-void test_calc_checksum()
+// Test case for putc (filling tx buffer)
+void test_putc(void)
+{
+    buffer_putc(SOF_SYM);
+    buffer_putc(' ');
+    buffer_putc('P'); buffer_putc(' '); buffer_putc('t');
+    buffer_putc(' ');
+    buffer_putc('+'); buffer_putc('4'); buffer_putc('6');
+    buffer_putc(' ');
+    buffer_putc('2'); buffer_putc('2'); buffer_putc('9');
+    buffer_putc(' ');
+    buffer_putc(EOF_SYM);
+    buffer_putc('\n');
+    TEST_ASSERT_EQUAL_STRING("# P t +46 229 !\n", txb.data);
+}
+
+// Test case for getc (retrieving values from rx buffer)
+void test_getc(void)
+{
+    buffer_putc(SOF_SYM);
+    buffer_putc(' ');
+    buffer_putc('P'); buffer_putc(' '); buffer_putc('t');
+    buffer_putc(' ');
+    buffer_putc('+'); buffer_putc('4'); buffer_putc('6');
+    buffer_putc(' ');
+    buffer_putc('2'); buffer_putc('2'); buffer_putc('9');
+    buffer_putc(' ');
+    buffer_putc(EOF_SYM);
+    buffer_putc('\n');
+    TEST_ASSERT_EQUAL_STRING("# P t +46 229 !\n", txb.data);
+
+    uart_handler();
+    unsigned char received_chars[17];
+    int i = 0;
+    while (received_chars[i++] = buffer_getc());
+    TEST_ASSERT_EQUAL_STRING("# P t +46 229 !\n", received_chars);
+}
+
+void test_calc_checksum(void)
 {
     TEST_ASSERT_EQUAL_INT(465, calc_checksum('A', "+25 60 800"));
     TEST_ASSERT_EQUAL_INT(222, calc_checksum('P', "-10"));
     TEST_ASSERT_EQUAL_INT(76, calc_checksum('L', ""));
+}
+
+// Test case for uart_handler
+void test_uart_handler(void)
+{
+    buffer_putc(SOF_SYM);
+    buffer_putc(' ');
+    buffer_putc('P'); buffer_putc(' '); buffer_putc('t');
+    buffer_putc(' ');
+    buffer_putc('+'); buffer_putc('4'); buffer_putc('6');
+    buffer_putc(' ');
+    buffer_putc('2'); buffer_putc('2'); buffer_putc('9');
+    buffer_putc(' ');
+    buffer_putc(EOF_SYM);
+    buffer_putc('\n');
+    TEST_ASSERT_EQUAL_STRING("# P t +46 229 !\n", txb.data); // Verify tx buffer was filled properly
+
+    uart_handler();
+    TEST_ASSERT_EQUAL_STRING(txb.data, rxb.data); // Verify if tx and rx buffers are equal
 }
 
 // Test case for process_command function with 'A' command
@@ -94,7 +151,6 @@ void test_process_command_Px(void)
 void test_process_command_L(void)
 {
     process_command('L', 0); // Assuming the second argument is not used for command 'L'
-    // Check the content of the buffer and verify if it contains expected data
     TEST_ASSERT_EQUAL_STRING(expected_frame_L, txb.data);
     uart_handler();
     TEST_ASSERT_EQUAL_STRING(expected_frame_L, rxb.data);
@@ -108,7 +164,7 @@ void test_process_command_R(void)
     uart_handler();
     TEST_ASSERT_EQUAL_STRING(expected_frame_R, rxb.data);
 
-    // checkar se limpou o buf em seguida a um comando o encher
+    // Check if buffer was cleared after having it filled by A command
     process_command('A', 0);
     uart_handler();
     process_command('R', 0);
@@ -123,6 +179,12 @@ int main(void)
     UNITY_BEGIN();
 
     RUN_TEST(test_calc_checksum);
+
+    RUN_TEST(test_putc);
+
+    RUN_TEST(test_uart_handler);
+
+    RUN_TEST(test_getc);
 
     RUN_TEST(test_process_command_A);
     
