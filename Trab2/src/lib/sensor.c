@@ -64,14 +64,14 @@ int process_command(unsigned char c, unsigned char ch)
     FILE *file = fopen("data.csv", "r");
     if (file == NULL) {
         printf("Error opening file!");
-        return -1;
+        return EXIT_FAILURE;
     }
 
     int temp, humidity, co2;
     char str_value[20] = "";
     char checksum_str[5] = "";
-    int totalSamples = 0;
-    int checksum;
+    int totalSamples = 0, counter = 0;
+    int checksum, InitPos;
 
     // Read values from the file and count the total number of samples
     while (fscanf(file, "%d, %d, %d", &temp, &humidity, &co2) == 3) {
@@ -81,6 +81,10 @@ int process_command(unsigned char c, unsigned char ch)
     switch (c) {
 
     case 'A':
+        buffer_putc(SOF_SYM);
+        buffer_putc(' '); // Add space after each value
+        buffer_putc(c);
+        buffer_putc(' '); 
         // Convert values to formatted string
         if (temp >= 0) {
             sprintf(str_value, "+%d %d %d", temp, humidity, co2);
@@ -98,9 +102,21 @@ int process_command(unsigned char c, unsigned char ch)
         for (int i = 0; checksum_str[i] != '\0'; i++) {
             buffer_putc(checksum_str[i]);
         }
+        buffer_putc(' '); 
+        buffer_putc(EOF_SYM);
+        buffer_putc('\n');
         break;
 
     case 'P':
+        if (ch != 't' && ch != 'h' && ch != 'c') {
+            return EXIT_FAILURE;
+        }
+        buffer_putc(SOF_SYM);
+        buffer_putc(' '); // Add space after each value
+        buffer_putc(c);
+        buffer_putc(' '); 
+        buffer_putc(ch);
+        buffer_putc(' ');
         switch (ch) {
 
         case 't':
@@ -120,9 +136,7 @@ int process_command(unsigned char c, unsigned char ch)
             break;
         
         default:
-        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-            // LEMBRAR-ME DE TROCAR MAGIC NUMBER RETURNS PARA DEFINES, E FAZER VERIFICAÇAO NO MAIN DOS RETURNS TALVEZ
-            return 2; // invalid command
+            break;
         }
 
         for (int i = 0; str_value[i] != '\0'; i++) {
@@ -135,13 +149,14 @@ int process_command(unsigned char c, unsigned char ch)
         for (int i = 0; checksum_str[i] != '\0'; i++) {
             buffer_putc(checksum_str[i]);
         }
-
+        buffer_putc(' '); 
+        buffer_putc(EOF_SYM);
+        buffer_putc('\n');
         break;
         
-    /*
     case 'L':
         // Calculate the starting position to read the last 20 samples
-        int InitPos = totalSamples - LAST_SAMPLES;
+        InitPos = totalSamples - LAST_SAMPLES;
         if (InitPos < 0) {
             InitPos = 0; // If there are fewer than 20 samples, start from the beginning
         }
@@ -153,7 +168,6 @@ int process_command(unsigned char c, unsigned char ch)
         }   
         // Read the last 20 samples
         Data values[20];
-        int counter = 0;
         while (counter < LAST_SAMPLES && fscanf(file, "%d, %d, %d", &values[counter].temp, &values[counter].humidity, &values[counter].co2) == 3) {
             counter++;
         }
@@ -182,7 +196,7 @@ int process_command(unsigned char c, unsigned char ch)
             buffer_putc('\n');
         }
         break;
-    */
+    
     case 'R':
         init_buffer();
         break;    

@@ -40,14 +40,7 @@ int main()
         switch (c)
         {
         case 'A':
-            buffer_putc(SOF_SYM);
-            buffer_putc(' '); // Add space after each value
-            buffer_putc(c);
-            buffer_putc(' '); 
             process_command(c, 0);
-            buffer_putc(' '); 
-            buffer_putc(EOF_SYM);
-            buffer_putc('\n');
             break;
         
         case 'P':
@@ -62,18 +55,8 @@ int main()
                 if (ch != 't' && ch != 'h' && ch != 'c') {
                     printf("Invalid option! Choose again: ");
                 }
-            } while (ch != 't' && ch != 'h' && ch != 'c');
-
-            buffer_putc(SOF_SYM);
-            buffer_putc(' '); // Add space after each value
-            buffer_putc(c);
-            buffer_putc(' '); 
-            buffer_putc(ch);
-            buffer_putc(' '); 
+            } while (ch != 't' && ch != 'h' && ch != 'c'); 
             process_command(c, ch);
-            buffer_putc(' '); 
-            buffer_putc(EOF_SYM);
-            buffer_putc('\n');
             break;
 
         case 'L':
