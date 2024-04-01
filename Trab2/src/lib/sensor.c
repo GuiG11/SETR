@@ -11,9 +11,13 @@
  
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "sensor.h"
 #include "unity.h"
+
+circularBuffer rxb;
+circularBuffer txb;
 
 // Initialize circular buffer
 void init_buffer()
@@ -25,6 +29,9 @@ void init_buffer()
     txb.head = 0;
     txb.tail = 0;
     txb.count = 0;
+
+    memset(rxb.data, 0, sizeof(rxb.data)); // Clear receive buffer data
+    memset(txb.data, 0, sizeof(txb.data)); // Clear transmit buffer data
 }
 
 // Put a character into the buffer
@@ -61,8 +68,8 @@ int process_command(unsigned char c, unsigned char ch)
     }
 
     int temp, humidity, co2;
-    char str_value[20];
-    char checksum_str[5];
+    char str_value[20] = "";
+    char checksum_str[5] = "";
     int totalSamples = 0;
     int checksum;
 
@@ -71,8 +78,8 @@ int process_command(unsigned char c, unsigned char ch)
         totalSamples++;
     }
 
-    switch (c)
-    {
+    switch (c) {
+
     case 'A':
         // Convert values to formatted string
         if (temp >= 0) {
@@ -93,33 +100,45 @@ int process_command(unsigned char c, unsigned char ch)
         }
         break;
 
-    case 'P':    
-        if (ch == 't') {
+    case 'P':
+        switch (ch) {
+
+        case 't':
             if (temp >= 0) {
                 sprintf(str_value, "+%d", temp);
             } else {
                 sprintf(str_value, "%d", temp);
             }
-        }
-        else if (ch == 'h') {
+            break;
+
+        case 'h':
             sprintf(str_value, "%d", humidity);
-        }
-        else if (ch == 'c') {
+            break;
+
+        case 'c':
             sprintf(str_value, "%d", co2);
+            break;
+        
+        default:
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            // LEMBRAR-ME DE TROCAR MAGIC NUMBER RETURNS PARA DEFINES, E FAZER VERIFICAÇAO NO MAIN DOS RETURNS TALVEZ
+            return 2; // invalid command
         }
 
         for (int i = 0; str_value[i] != '\0'; i++) {
             buffer_putc(str_value[i]);
         }  
         buffer_putc(' '); 
-
+        
         checksum = calc_checksum('P', str_value);
         sprintf(checksum_str, "%d", checksum);
         for (int i = 0; checksum_str[i] != '\0'; i++) {
             buffer_putc(checksum_str[i]);
         }
-        break;
 
+        break;
+        
+    /*
     case 'L':
         // Calculate the starting position to read the last 20 samples
         int InitPos = totalSamples - LAST_SAMPLES;
@@ -163,10 +182,9 @@ int process_command(unsigned char c, unsigned char ch)
             buffer_putc('\n');
         }
         break;
-
+    */
     case 'R':
         init_buffer();
-        printf("Resets the history!\n");
         break;    
 
     default:

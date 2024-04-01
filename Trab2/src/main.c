@@ -44,7 +44,7 @@ int main()
             buffer_putc(' '); // Add space after each value
             buffer_putc(c);
             buffer_putc(' '); 
-            process_command(c, ch);
+            process_command(c, 0);
             buffer_putc(' '); 
             buffer_putc(EOF_SYM);
             buffer_putc('\n');
@@ -52,9 +52,9 @@ int main()
         
         case 'P':
             printf( "Select 't': Reads the real-time value of the temperature\n"
-                   "Select 'h': Reads the real-time value of the humidity\n"
+                    "Select 'h': Reads the real-time value of the humidity\n"
                     "Select 'c': Reads the real-time value of the CO2\n"
-                    "Choose: ");
+                    "Choose a command: ");
             do {
                 scanf("%c", &ch);
                 printf("\n");
@@ -77,11 +77,12 @@ int main()
             break;
 
         case 'L':
-            process_command(c, ch);
+            process_command(c, 0);
             break;
 
         case 'R':
-            process_command(c, ch);
+            process_command(c, 0);
+            printf("History reset!\n");
             break;
 
         default:

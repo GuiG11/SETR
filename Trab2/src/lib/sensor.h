@@ -60,8 +60,8 @@ typedef struct {
     unsigned int co2; /**< CO2 level */
 } Data;
 
-static circularBuffer rxb; /**< Reception buffer */
-static circularBuffer txb; /**< Transmission buffer */
+extern circularBuffer rxb; /**< Reception buffer */
+extern circularBuffer txb; /**< Transmission buffer */
 
 /**
  * \brief Initializes the circular buffer for UART communication.
