@@ -19,7 +19,7 @@
 circularBuffer rxb;
 circularBuffer txb;
 
-// Initialize circular buffer
+// Initialize circular buffer (also clears it)
 void init_buffer()
 {
     rxb.head = 0;

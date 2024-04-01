@@ -27,15 +27,14 @@ int main()
                 "Select 'L': Returns the last 20 samples of each variable\n"
                 "Select 'R': Resets the history\n"
                 "Select 'E': Exit\n"
-                "Choose a command: ");
-        do {
-            scanf("%c", &c);
-            printf("\n");
-            getchar();
-            if (c != 'A' && c != 'P' && c != 'L' && c != 'R' && c != 'E') {
-                printf("Invalid option! Choose again: ");
-            }
-        } while (c != 'A' && c != 'P' && c != 'L' && c != 'R' && c != 'E');
+                "\nSelect a command: ");
+
+        scanf(" %c", &c);
+        getchar(); // Consume newline character
+
+        if (c != 'A' && c != 'P' && c != 'L' && c != 'R' && c != 'E') {
+            printf("Invalid option! Choose again: ");
+        }
 
         switch (c)
         {
@@ -44,18 +43,18 @@ int main()
             break;
         
         case 'P':
-            printf( "Select 't': Reads the real-time value of the temperature\n"
+            printf( "\nSelect 't': Reads the real-time value of the temperature\n"
                     "Select 'h': Reads the real-time value of the humidity\n"
                     "Select 'c': Reads the real-time value of the CO2\n"
-                    "Choose a command: ");
+                    "\nSelect a command: ");
             do {
-                scanf("%c", &ch);
-                printf("\n");
+                scanf(" %c", &ch);
                 getchar();
+
                 if (ch != 't' && ch != 'h' && ch != 'c') {
                     printf("Invalid option! Choose again: ");
                 }
-            } while (ch != 't' && ch != 'h' && ch != 'c'); 
+            } while (ch != 't' && ch != 'h' && ch != 'c');
             process_command(c, ch);
             break;
 
@@ -65,13 +64,15 @@ int main()
 
         case 'R':
             process_command(c, 0);
-            printf("History reset!\n");
+            printf("\nHistory reset!");
             break;
 
         default:
             break;
         }
 
+        printf("\n");
+        
         uart_handler();
 
         unsigned char received_char;
@@ -81,6 +82,7 @@ int main()
         printf("\n");
 
     } while (c != 'E');
+    
     printf("Goodbye!\n");
 
     return 0;
