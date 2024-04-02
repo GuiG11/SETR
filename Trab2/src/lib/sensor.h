@@ -37,7 +37,7 @@
 // ================================================================================== //
 
 #define LAST_SAMPLES 20 /**< Number of last samples to return */
-#define BUF_SIZE 33554432   /**< Size of the circular buffer */
+#define BUF_SIZE 500   /**< Size of the circular buffer */
 #define SOF_SYM '#' /**< Start of Frame symbol */
 #define EOF_SYM '!' /**< End of Frame symbol */
 
