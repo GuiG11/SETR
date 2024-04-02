@@ -5,9 +5,9 @@
 
 const char expected_frame_A[] = "# A +46 17 14420 569 !\n";
 
-const char expected_frame_Pt[] = "# P t +46 229 !\n";
-const char expected_frame_Ph[] = "# P h 17 184 !\n";
-const char expected_frame_Pc[] = "# P c 14420 331 !\n";
+const char expected_frame_Pt[] = "# P t +46 345 !\n";
+const char expected_frame_Ph[] = "# P h 17 288 !\n";
+const char expected_frame_Pc[] = "# P c 14420 430 !\n";
 const char expected_frame_Px[] = "";
 
 const char expected_frame_L[] =  "# L +46 17 14420 580 !\n# L -15 63 798 496 !\n"
@@ -43,11 +43,11 @@ void test_putc(void)
     buffer_putc(' ');
     buffer_putc('+'); buffer_putc('4'); buffer_putc('6');
     buffer_putc(' ');
-    buffer_putc('2'); buffer_putc('2'); buffer_putc('9');
+    buffer_putc('3'); buffer_putc('4'); buffer_putc('5');
     buffer_putc(' ');
     buffer_putc(EOF_SYM);
     buffer_putc('\n');
-    TEST_ASSERT_EQUAL_STRING("# P t +46 229 !\n", txb.data);
+    TEST_ASSERT_EQUAL_STRING("# P t +46 345 !\n", txb.data);
 }
 
 // Test case for getc (retrieving values from rx buffer)
@@ -59,24 +59,24 @@ void test_getc(void)
     buffer_putc(' ');
     buffer_putc('+'); buffer_putc('4'); buffer_putc('6');
     buffer_putc(' ');
-    buffer_putc('2'); buffer_putc('2'); buffer_putc('9');
+    buffer_putc('3'); buffer_putc('4'); buffer_putc('5');
     buffer_putc(' ');
     buffer_putc(EOF_SYM);
     buffer_putc('\n');
-    TEST_ASSERT_EQUAL_STRING("# P t +46 229 !\n", txb.data);
+    TEST_ASSERT_EQUAL_STRING("# P t +46 345 !\n", txb.data);
 
     uart_handler();
     unsigned char received_chars[17];
     int i = 0;
     while (received_chars[i++] = buffer_getc());
-    TEST_ASSERT_EQUAL_STRING("# P t +46 229 !\n", received_chars);
+    TEST_ASSERT_EQUAL_STRING("# P t +46 345 !\n", received_chars);
 }
 
 void test_calc_checksum(void)
 {
-    TEST_ASSERT_EQUAL_INT(465, calc_checksum('A', "+25 60 800"));
-    TEST_ASSERT_EQUAL_INT(222, calc_checksum('P', "-10"));
-    TEST_ASSERT_EQUAL_INT(76, calc_checksum('L', ""));
+    TEST_ASSERT_EQUAL_INT(465, calc_checksum('A', '\0', "+25 60 800"));
+    TEST_ASSERT_EQUAL_INT(338, calc_checksum('P', 't', "-10"));
+    TEST_ASSERT_EQUAL_INT(76, calc_checksum('L', '\0', ""));
 }
 
 // Test case for uart_handler

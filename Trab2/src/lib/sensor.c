@@ -58,7 +58,7 @@ unsigned char buffer_getc()
 }
 
 // Process received command
-int process_command(unsigned char c, unsigned char ch)
+int process_command(unsigned char cmd, unsigned char ch)
 {
     // Open the file for reading
     FILE *file = fopen("data.csv", "r");
@@ -78,12 +78,12 @@ int process_command(unsigned char c, unsigned char ch)
         totalSamples++;
     }
 
-    switch (c) {
+    switch (cmd) {
 
     case 'A':
         buffer_putc(SOF_SYM);
         buffer_putc(' '); // Add space after each value
-        buffer_putc(c);
+        buffer_putc(cmd);
         buffer_putc(' '); 
         // Convert values to formatted string
         if (temp >= 0) {
@@ -96,7 +96,7 @@ int process_command(unsigned char c, unsigned char ch)
             buffer_putc(str_value[i]);
         }
         buffer_putc(' ');
-        checksum = calc_checksum('A', str_value);
+        checksum = calc_checksum(cmd, '\0', str_value);
         // Convert checksum to string
         sprintf(checksum_str, "%d", checksum);
         for (int i = 0; checksum_str[i] != '\0'; i++) {
@@ -113,7 +113,7 @@ int process_command(unsigned char c, unsigned char ch)
         }
         buffer_putc(SOF_SYM);
         buffer_putc(' '); // Add space after each value
-        buffer_putc(c);
+        buffer_putc(cmd);
         buffer_putc(' '); 
         buffer_putc(ch);
         buffer_putc(' ');
@@ -144,7 +144,7 @@ int process_command(unsigned char c, unsigned char ch)
         }  
         buffer_putc(' '); 
         
-        checksum = calc_checksum('P', str_value);
+        checksum = calc_checksum(cmd, ch , str_value);
         sprintf(checksum_str, "%d", checksum);
         for (int i = 0; checksum_str[i] != '\0'; i++) {
             buffer_putc(checksum_str[i]);
@@ -175,7 +175,7 @@ int process_command(unsigned char c, unsigned char ch)
         for (int i = counter-1; i >= 0; i--) {    
             buffer_putc(SOF_SYM);
             buffer_putc(' '); // Add space after each value
-            buffer_putc(c);
+            buffer_putc(cmd);
             buffer_putc(' '); 
             if (values[i].temp >= 0)
                 sprintf(str_value, "+%d %d %d", values[i].temp, values[i].humidity, values[i].co2);
@@ -185,7 +185,7 @@ int process_command(unsigned char c, unsigned char ch)
                 buffer_putc(str_value[j]);
             }
             buffer_putc(' ');
-            int checksum = calc_checksum('L', str_value);
+            int checksum = calc_checksum(cmd, '\0', str_value);
             // Convert checksum to string
             sprintf(checksum_str, "%d", checksum);
             for (int i = 0; checksum_str[i] != '\0'; i++) {
@@ -219,10 +219,11 @@ void uart_handler()
     }
 }
 
-int calc_checksum(unsigned char cmd, const char *data) {
+int calc_checksum(unsigned char cmd, unsigned char ch, const char *data) {
     int checksum = 0;
 
     checksum += cmd;
+    checksum += ch;
     while (*data != '\0') {
         if (*data != ' ')
             checksum += *data;

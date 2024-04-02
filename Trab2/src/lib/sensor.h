@@ -108,7 +108,7 @@ unsigned char buffer_getc();
  * \param ch Additional argument for certain commands.
  * \return \c 0 if successful, \c -1 otherwise.
  */
-int process_command(unsigned char c, unsigned char ch);
+int process_command(unsigned char cmd, unsigned char ch);
 
 /**
  * \brief Handles UART "interrupts" and manages data transmission.
@@ -132,7 +132,7 @@ void uart_handler();
  * \param data The data associated with the command.
  * \return The calculated checksum integer.
  */
-int calc_checksum(unsigned char cmd, const char *data);
+int calc_checksum(unsigned char cmd, unsigned char ch, const char *data);
 
 /** @} */ // End of sensor module
 

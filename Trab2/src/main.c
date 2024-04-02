@@ -17,7 +17,7 @@
 
 int main() 
 {   
-    unsigned char c;
+    unsigned char cmd;
     unsigned char ch;
     init_buffer(); // Initialize buffer
 
@@ -29,17 +29,17 @@ int main()
                 "Select 'E': Exit\n"
                 "\nSelect a command: ");
 
-        scanf(" %c", &c);
+        scanf(" %c", &cmd);
         getchar(); // Consume newline character
 
-        if (c != 'A' && c != 'P' && c != 'L' && c != 'R' && c != 'E') {
+        if (cmd != 'A' && cmd != 'P' && cmd != 'L' && cmd != 'R' && cmd != 'E') {
             printf("Invalid option! Choose again: ");
         }
 
-        switch (c)
+        switch (cmd)
         {
         case 'A':
-            process_command(c, 0);
+            process_command(cmd, 0);
             break;
         
         case 'P':
@@ -55,15 +55,15 @@ int main()
                     printf("Invalid option! Choose again: ");
                 }
             } while (ch != 't' && ch != 'h' && ch != 'c');
-            process_command(c, ch);
+            process_command(cmd, ch);
             break;
 
         case 'L':
-            process_command(c, 0);
+            process_command(cmd, 0);
             break;
 
         case 'R':
-            process_command(c, 0);
+            process_command(cmd, 0);
             printf("\nHistory reset!");
             break;
 
@@ -81,7 +81,7 @@ int main()
         }
         printf("\n");
 
-    } while (c != 'E');
+    } while (cmd != 'E');
     
     printf("Goodbye!\n");
 
