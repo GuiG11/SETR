@@ -22,11 +22,7 @@ const char expected_frame_L[] =  "# L +46 17 14420 580 !\n# L -15 63 798 496 !\n
                                 "# L +43 11 9800 529 !\n# L -50 90 465 486 !\n"; 
 
 
-const char expected_frame_R[] = ""; // acho q reset history é ao csv n ao buffer
-// se for ao csv é facil de fazer no sensor.c mas n tenho certeza como se testava aqui
-// diria q é fazer TEST_ASSERT_EQUAL_STRING("", leitura do csv);
-// se fizermos o reset ser ao csv, depois reaproveita-se a funçao fill q eu tinha feito
-// ou ent faz se uma nova para encher o csv com os mesmos valores q agr para estes testes continuaremm possiveis sem ter de mudar a expected data
+const char expected_frame_R[] = ""; 
 
 void setUp(void) 
 {
