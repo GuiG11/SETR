@@ -104,7 +104,7 @@ unsigned char buffer_getc();
  * The function processes the command character along with any additional arguments and performs the necessary actions.
  * It also checks if the command is valid and was successfully processed.
  * 
- * \param c The command character.
+ * \param cmd The command character.
  * \param ch Additional argument for certain commands.
  * \return \c 0 if successful, \c -1 otherwise.
  */
@@ -129,6 +129,7 @@ void uart_handler();
  * The checksum is computed by summing the numerical values of the command character and each byte of the data array.
  *
  * \param cmd The command character.
+ * \param ch Additional argument for certain commands.
  * \param data The data associated with the command.
  * \return The calculated checksum integer.
  */
