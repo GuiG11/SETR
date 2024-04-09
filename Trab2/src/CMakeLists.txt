@@ -11,6 +11,9 @@ add_subdirectory(lib)
 add_executable(main main.c)
 add_executable(test test.c)
 
+target_compile_options(main PUBLIC -Wall)
+target_compile_options(test PUBLIC -Wall)
+
 # Generate variables with set of libs and include folders
 # Dependencies for libraries files are automatically set 
 list(APPEND EXTRA_LIBS sensorLib)

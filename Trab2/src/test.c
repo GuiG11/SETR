@@ -68,7 +68,7 @@ void test_getc(void)
     uart_handler();
     unsigned char received_chars[17];
     int i = 0;
-    while (received_chars[i++] = buffer_getc());
+    while ((received_chars[i++] = buffer_getc()));
     TEST_ASSERT_EQUAL_STRING("# P t +46 345 !\n", received_chars);
 }
 
