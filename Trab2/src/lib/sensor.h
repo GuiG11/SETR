@@ -41,6 +41,11 @@
 #define SOF_SYM '#' /**< Start of Frame symbol */
 #define EOF_SYM '!' /**< End of Frame symbol */
 
+#define BUF_EMPTY 0 // char '\0'
+#define INVALID_COMMAND 0
+#define SUCCESS 1
+#define FILE_ERROR 2
+
 /**
  * \brief Structure representing a circular buffer for UART communication.
  */
@@ -106,7 +111,7 @@ unsigned char buffer_getc();
  * 
  * \param cmd The command character.
  * \param ch Additional argument for certain commands.
- * \return \c 0 if successful, \c -1 otherwise.
+ * \return \c SUCCESS if successful, \c INVALID_COMMAND if the received command is invalid, and \c FILE_ERROR if there's an error opening the file.
  */
 int process_command(unsigned char cmd, unsigned char ch);
 

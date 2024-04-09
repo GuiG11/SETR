@@ -24,6 +24,8 @@ const char expected_frame_L[] =  "# L +46 17 14420 580 !\n# L -15 63 798 496 !\n
 
 const char expected_frame_R[] = ""; 
 
+const char expected_frame_X[] = "";
+
 void setUp(void) 
 {
     init_buffer();
@@ -31,12 +33,29 @@ void setUp(void)
 
 void tearDown(void)
 {
-
+    // init_buffer(); not needed as it is called on setUp() and it also clears the buffer
 }
 
 // Test case for putc (filling tx buffer)
 void test_putc(void)
 {
+    // Test for full buffer
+    for (int i = 0; i < BUF_SIZE; i++) {    // fills buffer
+        buffer_putc(i % 10 + 48);
+    }
+    TEST_ASSERT_EQUAL_STRING("01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789", txb.data);
+    
+    // overfill buffer
+    buffer_putc('t');
+    buffer_putc('e');
+    buffer_putc('s');
+    buffer_putc('t');
+
+    TEST_ASSERT_EQUAL_STRING("01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789", txb.data);
+    
+    // Normal conditions test
+    init_buffer();
+
     buffer_putc(SOF_SYM);
     buffer_putc(' ');
     buffer_putc('P'); buffer_putc(' '); buffer_putc('t');
@@ -53,6 +72,17 @@ void test_putc(void)
 // Test case for getc (retrieving values from rx buffer)
 void test_getc(void)
 {
+    // Test for empty buffer
+    //buffer_putc('\0');
+    uart_handler();
+    unsigned char received_chars1[5];
+    int i = 0;
+    while ((received_chars1[i++] = buffer_getc()));
+    TEST_ASSERT_EQUAL_STRING("", received_chars1);
+
+    // Normal conditions test
+    init_buffer();
+
     buffer_putc(SOF_SYM);
     buffer_putc(' ');
     buffer_putc('P'); buffer_putc(' '); buffer_putc('t');
@@ -67,11 +97,12 @@ void test_getc(void)
 
     uart_handler();
     unsigned char received_chars[17];
-    int i = 0;
+    i = 0;
     while ((received_chars[i++] = buffer_getc()));
     TEST_ASSERT_EQUAL_STRING("# P t +46 345 !\n", received_chars);
 }
 
+// Test if checksum calculation is correct
 void test_calc_checksum(void)
 {
     TEST_ASSERT_EQUAL_INT(465, calc_checksum('A', '\0', "+25 60 800"));
@@ -169,6 +200,13 @@ void test_process_command_R(void)
     TEST_ASSERT_EQUAL_STRING(expected_frame_R, rxb.data);
 }
 
+void test_process_command_X(void)
+{
+    process_command('X', 0);
+    TEST_ASSERT_EQUAL_STRING(expected_frame_X, txb.data);
+    uart_handler();
+    TEST_ASSERT_EQUAL_STRING(expected_frame_X, rxb.data);
+}
 
 int main(void)
 {
@@ -193,6 +231,8 @@ int main(void)
     
     RUN_TEST(test_process_command_R);
     
+    RUN_TEST(test_process_command_X);
+
     UNITY_END();
 
     return 0;

@@ -53,18 +53,28 @@ unsigned char buffer_getc()
         rxb.count--;           
         return c;
     } else {
-        return 0; // Return 0 if buffer is empty
+        return BUF_EMPTY; // Return 0 if buffer is empty
     }
 }
 
 // Process received command
 int process_command(unsigned char cmd, unsigned char ch)
 {
+    if (cmd != 'A' && cmd != 'P' && cmd != 'L' && cmd != 'R' && cmd != 'E') {
+        return INVALID_COMMAND;
+    }
+
+    // If we were passing a whole "# CMD DATA CS !" segment to this function, here is where we would check if the string is valid:
+    // it cant be missing a '#' or a '!', it cant be partially filled (missing fields), it cant be duplicated, checksum has to be correct, etc
+    // We would then test these conditions in test.c using Unity
+
+    // Since we are using a different approach where only the CMD field is passed and we input everything else in the buffer,
+    // there's no point in testing these conditions and we would need to develop a way to read whole "# CMD DATA CS !" segments
+
     // Open the file for reading
     FILE *file = fopen("data.csv", "r");
     if (file == NULL) {
-        printf("Error opening file!");
-        return EXIT_FAILURE;
+        return FILE_ERROR;   
     }
 
     int temp, humidity, co2;
@@ -109,7 +119,7 @@ int process_command(unsigned char cmd, unsigned char ch)
 
     case 'P':
         if (ch != 't' && ch != 'h' && ch != 'c') {
-            return EXIT_FAILURE;
+            return INVALID_COMMAND;
         }
         buffer_putc(SOF_SYM);
         buffer_putc(' '); // Add space after each value
@@ -136,7 +146,7 @@ int process_command(unsigned char cmd, unsigned char ch)
             break;
         
         default:
-            break;
+            return INVALID_COMMAND;
         }
 
         for (int i = 0; str_value[i] != '\0'; i++) {
@@ -206,6 +216,7 @@ int process_command(unsigned char cmd, unsigned char ch)
     }
 
     fclose(file);
+    return SUCCESS;
 }
 
 void uart_handler()
