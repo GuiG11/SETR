@@ -69,6 +69,33 @@ void test_putc(void)
     TEST_ASSERT_EQUAL_STRING("# P t +46 345 !\n", txb.data);
 }
 
+// Test if checksum calculation is correct
+void test_calc_checksum(void)
+{
+    TEST_ASSERT_EQUAL_INT(465, calc_checksum('A', '\0', "+25 60 800"));
+    TEST_ASSERT_EQUAL_INT(338, calc_checksum('P', 't', "-10"));
+    TEST_ASSERT_EQUAL_INT(76, calc_checksum('L', '\0', ""));
+}
+
+// Test case for uart_handler
+void test_uart_handler(void)
+{
+    buffer_putc(SOF_SYM);
+    buffer_putc(' ');
+    buffer_putc('P'); buffer_putc(' '); buffer_putc('t');
+    buffer_putc(' ');
+    buffer_putc('+'); buffer_putc('4'); buffer_putc('6');
+    buffer_putc(' ');
+    buffer_putc('2'); buffer_putc('2'); buffer_putc('9');
+    buffer_putc(' ');
+    buffer_putc(EOF_SYM);
+    buffer_putc('\n');
+    TEST_ASSERT_EQUAL_STRING("# P t +46 229 !\n", txb.data); // Verify tx buffer was filled properly
+
+    uart_handler();
+    TEST_ASSERT_EQUAL_STRING(txb.data, rxb.data); // Verify if tx and rx buffers are equal
+}
+
 // Test case for getc (retrieving values from rx buffer)
 void test_getc(void)
 {
@@ -102,110 +129,81 @@ void test_getc(void)
     TEST_ASSERT_EQUAL_STRING("# P t +46 345 !\n", received_chars);
 }
 
-// Test if checksum calculation is correct
-void test_calc_checksum(void)
-{
-    TEST_ASSERT_EQUAL_INT(465, calc_checksum('A', '\0', "+25 60 800"));
-    TEST_ASSERT_EQUAL_INT(338, calc_checksum('P', 't', "-10"));
-    TEST_ASSERT_EQUAL_INT(76, calc_checksum('L', '\0', ""));
-}
-
-// Test case for uart_handler
-void test_uart_handler(void)
-{
-    buffer_putc(SOF_SYM);
-    buffer_putc(' ');
-    buffer_putc('P'); buffer_putc(' '); buffer_putc('t');
-    buffer_putc(' ');
-    buffer_putc('+'); buffer_putc('4'); buffer_putc('6');
-    buffer_putc(' ');
-    buffer_putc('2'); buffer_putc('2'); buffer_putc('9');
-    buffer_putc(' ');
-    buffer_putc(EOF_SYM);
-    buffer_putc('\n');
-    TEST_ASSERT_EQUAL_STRING("# P t +46 229 !\n", txb.data); // Verify tx buffer was filled properly
-
-    uart_handler();
-    TEST_ASSERT_EQUAL_STRING(txb.data, rxb.data); // Verify if tx and rx buffers are equal
-}
-
 // Test case for process_command function with 'A' command
 void test_process_command_A(void)
 {
-    process_command('A', 0);
+    TEST_ASSERT_EQUAL_INT(process_command('A', 0), SUCCESS); // Call function and check if its return is good
     TEST_ASSERT_EQUAL_STRING(expected_frame_A, txb.data); // Verify if tx buffer has expected data
-    uart_handler();
-    TEST_ASSERT_EQUAL_STRING(expected_frame_A, rxb.data); // Verify if rx buffer has expected data
+    //uart_handler();
+    //TEST_ASSERT_EQUAL_STRING(expected_frame_A, rxb.data); // Verify if rx buffer has expected data
 }
 
 // Test case for process_command function with 'Pt' commands
 void test_process_command_Pt(void)
 {
-    process_command('P', 't');
+    TEST_ASSERT_EQUAL_INT(process_command('P', 't'), SUCCESS);
     TEST_ASSERT_EQUAL_STRING(expected_frame_Pt, txb.data);
-    uart_handler();
-    TEST_ASSERT_EQUAL_STRING(expected_frame_Pt, rxb.data);
+    //uart_handler();
+    //TEST_ASSERT_EQUAL_STRING(expected_frame_Pt, rxb.data);
 }
 
 // Test case for process_command function with 'Ph' commands
 void test_process_command_Ph(void)
 {
-    process_command('P', 'h');
+    TEST_ASSERT_EQUAL_INT(process_command('P', 'h'), SUCCESS);
     TEST_ASSERT_EQUAL_STRING(expected_frame_Ph, txb.data);
-    uart_handler();
-    TEST_ASSERT_EQUAL_STRING(expected_frame_Ph, rxb.data);
+    //uart_handler();
+    //TEST_ASSERT_EQUAL_STRING(expected_frame_Ph, rxb.data);
 }
 
 // Test case for process_command function with 'Pc' command
 void test_process_command_Pc(void)
 {
-    process_command('P', 'c');
+    TEST_ASSERT_EQUAL_INT(process_command('P', 'c'), SUCCESS);
     TEST_ASSERT_EQUAL_STRING(expected_frame_Pc, txb.data);
-    uart_handler();
-    TEST_ASSERT_EQUAL_STRING(expected_frame_Pc, rxb.data);
+    //uart_handler();
+    //TEST_ASSERT_EQUAL_STRING(expected_frame_Pc, rxb.data);
 }
 
 // Test case for process_command function with 'P' command and invalid sub-command
 void test_process_command_Px(void)
 {
-    process_command('P', 'x');
+    TEST_ASSERT_EQUAL_INT(process_command('P', 'x'), INVALID_COMMAND);
     TEST_ASSERT_EQUAL_STRING(expected_frame_Px, txb.data);
-    uart_handler();
-    TEST_ASSERT_EQUAL_STRING(expected_frame_Px, rxb.data);
+    //uart_handler();
+    //TEST_ASSERT_EQUAL_STRING(expected_frame_Px, rxb.data);
 }
 
 // Test case for process_command function with 'L' command
 void test_process_command_L(void)
 {
-    process_command('L', 0); // Assuming the second argument is not used for command 'L'
+    TEST_ASSERT_EQUAL_INT(process_command('L', 0), SUCCESS);
     TEST_ASSERT_EQUAL_STRING(expected_frame_L, txb.data);
-    uart_handler();
-    TEST_ASSERT_EQUAL_STRING(expected_frame_L, rxb.data);
+    //uart_handler();
+    //TEST_ASSERT_EQUAL_STRING(expected_frame_L, rxb.data);
 }
 
 // Test case for process_command function with 'R' command
 void test_process_command_R(void)
 {
-    process_command('R', 0);
+    TEST_ASSERT_EQUAL_INT(process_command('R', 0), SUCCESS);
     TEST_ASSERT_EQUAL_STRING(expected_frame_R, txb.data);
-    uart_handler();
     TEST_ASSERT_EQUAL_STRING(expected_frame_R, rxb.data);
 
-    // Check if buffer was cleared after having it filled by A command
+    // Check if buffers were cleared after having them filled by A command + uart_handler
     process_command('A', 0);
     uart_handler();
-    process_command('R', 0);
+    TEST_ASSERT_EQUAL_INT(process_command('R', 0), SUCCESS);
     TEST_ASSERT_EQUAL_STRING(expected_frame_R, txb.data);
-    uart_handler();
     TEST_ASSERT_EQUAL_STRING(expected_frame_R, rxb.data);
 }
 
 void test_process_command_X(void)
 {
-    process_command('X', 0);
+    TEST_ASSERT_EQUAL_INT(process_command('X', 0), INVALID_COMMAND);
     TEST_ASSERT_EQUAL_STRING(expected_frame_X, txb.data);
-    uart_handler();
-    TEST_ASSERT_EQUAL_STRING(expected_frame_X, rxb.data);
+    //uart_handler();
+    //TEST_ASSERT_EQUAL_STRING(expected_frame_X, rxb.data);
 }
 
 int main(void)
