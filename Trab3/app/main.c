@@ -5,6 +5,7 @@
 #include <zephyr/sys/printk.h>
 #include "../src/sc_types.h"
 #include "../src-gen/assignment3.h"
+#include "main.h"
 
 
 #define SW0_NODE	DT_ALIAS(sw0)
@@ -137,9 +138,9 @@ void button3_pressed(const struct device *dev, struct gpio_callback *cb, uint32_
 	print_status();
 }
 
-int main(void)
+int leds_configure()
 {
-    int ret;
+	 int ret;
 
 	if (!device_is_ready(led0.port)) {
 		return -1;
@@ -154,22 +155,6 @@ int main(void)
 	}
 
     if (!device_is_ready(led3.port)) {
-		return -1;
-	}
-
-    if (!device_is_ready(button0.port)) {
-		return -1;
-	}
-
-	if (!device_is_ready(button1.port)) {
-		return -1;
-	}
-
-	if (!device_is_ready(button2.port)) {
-		return -1;
-	}
-
-	if (!device_is_ready(button3.port)) {
 		return -1;
 	}
 
@@ -192,6 +177,27 @@ int main(void)
 	if (ret < 0) {
 		return -1;
 	}
+}
+
+int buttons_callback()
+{
+	int ret;
+
+	if (!device_is_ready(button0.port)) {
+		return -1;
+	}
+
+	if (!device_is_ready(button1.port)) {
+		return -1;
+	}
+
+	if (!device_is_ready(button2.port)) {
+		return -1;
+	}
+
+	if (!device_is_ready(button3.port)) {
+		return -1;
+	}
 
 	ret = gpio_pin_configure_dt(&button0, GPIO_INPUT);
 	if (ret < 0) {
@@ -212,21 +218,42 @@ int main(void)
 	if (ret < 0) {
 		return -1;
 	}
+}
 
-    ret = gpio_pin_interrupt_configure_dt(&button0, GPIO_INT_EDGE_TO_ACTIVE );
+int interrupts_configure()
+{
+	int ret;
+	ret = gpio_pin_interrupt_configure_dt(&button0, GPIO_INT_EDGE_TO_ACTIVE );
     ret = gpio_pin_interrupt_configure_dt(&button1, GPIO_INT_EDGE_TO_ACTIVE );
     ret = gpio_pin_interrupt_configure_dt(&button2, GPIO_INT_EDGE_TO_ACTIVE );
     ret = gpio_pin_interrupt_configure_dt(&button3, GPIO_INT_EDGE_TO_ACTIVE );
+}
 
-    gpio_init_callback(&button0_cb_data, button0_pressed, BIT(button0.pin));
+void init_callback()
+{
+	gpio_init_callback(&button0_cb_data, button0_pressed, BIT(button0.pin));
     gpio_init_callback(&button1_cb_data, button1_pressed, BIT(button1.pin));
     gpio_init_callback(&button2_cb_data, button2_pressed, BIT(button2.pin)); 
     gpio_init_callback(&button3_cb_data, button3_pressed, BIT(button3.pin));
+}
 
-    gpio_add_callback(button0.port, &button0_cb_data);
+void add_callback()
+{
+	gpio_add_callback(button0.port, &button0_cb_data);
     gpio_add_callback(button1.port, &button1_cb_data);
     gpio_add_callback(button2.port, &button2_cb_data);
-    gpio_add_callback(button3.port, &button3_cb_data);   
+    gpio_add_callback(button3.port, &button3_cb_data); 
+}
+
+int main(void)
+{
+	leds_configure();
+	buttons_configure();
+	interrupts_configure();
+
+	init_callback();
+
+	add_callback();
 
 	assignment3_init(&vendingMachine);
 	assignment3_enter(&vendingMachine);
