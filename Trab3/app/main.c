@@ -37,55 +37,44 @@ static bool button3_pressed_once = false;
 // Initialize the state machine
 Assignment3 vendingMachine;
 
-void button0_pressed(const struct device *dev, struct gpio_callback *cb, uint32_t pins)
-{
-    assignment3_but1_raise_insert(&vendingMachine);
-    printk("\nInserted 1 credit\n");
-	//vendingMachine.internal.Credit += 1;
-
+void print_status(){
 	// Print current credit and product information
-    printk("\nCurrent credit: %d\n", vendingMachine.internal.Credit);
+	printk("\n==============================\n");
+    printk("Current credit: %d\n", vendingMachine.internal.Credit);
 	printk("Selected product: %d\n", vendingMachine.internal.Product);
 	printk("Price of selected product: %d\n", vendingMachine.internal.Price);
+	printk("==============================\n");
+}
+
+void button0_pressed(const struct device *dev, struct gpio_callback *cb, uint32_t pins)
+{
+	if (assignment3_is_state_active(&vendingMachine, Assignment3_main_region_Return_Credit) || assignment3_is_state_active(&vendingMachine, Assignment3_main_region_Dispense))
+		return;
+
+    assignment3_but1_raise_insert(&vendingMachine);
+    printk("\nInserted 1 credit\n");
+
+	print_status();
 }
 
 void button1_pressed(const struct device *dev, struct gpio_callback *cb, uint32_t pins)
 {
+	if (assignment3_is_state_active(&vendingMachine, Assignment3_main_region_Return_Credit) || assignment3_is_state_active(&vendingMachine, Assignment3_main_region_Dispense))
+		return;
+
     assignment3_but2_raise_insert(&vendingMachine);
     printk("\nInserted 2 credits\n");
-	//vendingMachine.internal.Credit += 2;
 
-	// Print current credit and product information
-    printk("\nCurrent credit: %d\n", vendingMachine.internal.Credit);
-	printk("Selected product: %d\n", vendingMachine.internal.Product);
-	printk("Price of selected product: %d\n", vendingMachine.internal.Price);
+	print_status();
 }
 
 void button2_pressed(const struct device *dev, struct gpio_callback *cb, uint32_t pins)
 {
+	if (assignment3_is_state_active(&vendingMachine, Assignment3_main_region_Return_Credit) || assignment3_is_state_active(&vendingMachine, Assignment3_main_region_Dispense))
+		return;
+		
     assignment3_but3_raise_browse(&vendingMachine);
     printk("\nBrowsing products...\n");
-	/*if (vendingMachine.internal.Product < 3) {
-		vendingMachine.internal.Product += 1;
-		vendingMachine.internal.Price += 1;
-	} else {
-		vendingMachine.internal.Product = 0;
-		vendingMachine.internal.Price = 0;
-	}*/
-
-	/*if (vendingMachine.internal.Product == 1) {
-		gpio_pin_configure_dt(&led0, GPIO_OUTPUT_INACTIVE);
-		gpio_pin_configure_dt(&led1, GPIO_OUTPUT_ACTIVE);
-	} else if (vendingMachine.internal.Product == 2) {
-		gpio_pin_configure_dt(&led0, GPIO_OUTPUT_ACTIVE);
-		gpio_pin_configure_dt(&led1, GPIO_OUTPUT_INACTIVE);
-	} else if (vendingMachine.internal.Product == 3) {
-		gpio_pin_configure_dt(&led0, GPIO_OUTPUT_ACTIVE);
-		gpio_pin_configure_dt(&led1, GPIO_OUTPUT_ACTIVE);
-	} else if (vendingMachine.internal.Product == 0) {
-		gpio_pin_configure_dt(&led0, GPIO_OUTPUT_INACTIVE);
-		gpio_pin_configure_dt(&led1, GPIO_OUTPUT_INACTIVE);
-	}*/
 
 	if (assignment3_led1_get_power(&vendingMachine) == 1) {
 		gpio_pin_set_dt(&led0, 1);
@@ -99,65 +88,39 @@ void button2_pressed(const struct device *dev, struct gpio_callback *cb, uint32_
 		gpio_pin_set_dt(&led1, 0);
 	}
 
-	// Print current credit and product information
-    printk("\nCurrent credit: %d\n", vendingMachine.internal.Credit);
-	printk("Selected product: %d\n", vendingMachine.internal.Product);
-	printk("Price of selected product: %d\n", vendingMachine.internal.Price);
+	print_status();
 }
 
 void button3_pressed(const struct device *dev, struct gpio_callback *cb, uint32_t pins)
 {
-    assignment3_but4_raise_enter(&vendingMachine);
+	if (vendingMachine.internal.Credit < vendingMachine.internal.Price && vendingMachine.internal.Product > 0) {
+		printk("\nProduct costs %d credit. Please insert credit.\n", vendingMachine.internal.Price);
+		print_status();
+		return;
+	}
+
+	if (vendingMachine.internal.Product == 0 && vendingMachine.internal.Credit <= 0) {
+		printk("\nThere is no credit to refund!\n");
+		print_status();
+		return;
+	}
+
     printk("\nSelected product.\n");
-
+	
 	if (!button3_pressed_once) {
-		/*if (vendingMachine.internal.Credit >= vendingMachine.internal.Price && vendingMachine.internal.Product > 0) {
-			gpio_pin_configure_dt(&led2, GPIO_OUTPUT_ACTIVE);
-		} else if (vendingMachine.internal.Credit < vendingMachine.internal.Price && vendingMachine.internal.Product > 0) {
-			gpio_pin_configure_dt(&led2, GPIO_OUTPUT_INACTIVE);
-		}
-
-		if (vendingMachine.internal.Product == 0 && vendingMachine.internal.Credit > 0) {
-			gpio_pin_configure_dt(&led3, GPIO_OUTPUT_ACTIVE);
-		} else if (vendingMachine.internal.Product == 0 && vendingMachine.internal.Credit <= 0) {
-			gpio_pin_configure_dt(&led3, GPIO_OUTPUT_INACTIVE);
-		}*/
-
 		printk("\nPress again to confirm.\n");
 		button3_pressed_once = true;
 	} else {
-		if (vendingMachine.internal.Credit >= vendingMachine.internal.Price && vendingMachine.internal.Product > 0) {
-			printk("\nSale completed.\n");
-			//vendingMachine.internal.Credit = vendingMachine.internal.Credit - vendingMachine.internal.Price;
-			//gpio_pin_configure_dt(&led2, GPIO_OUTPUT_INACTIVE);
-		} else if (vendingMachine.internal.Credit < vendingMachine.internal.Price && vendingMachine.internal.Product > 0) {
-			printk("\nInsufficient credit!\n");
-			//gpio_pin_configure_dt(&led2, GPIO_OUTPUT_INACTIVE);
-		}
+		if (vendingMachine.internal.Credit >= vendingMachine.internal.Price && vendingMachine.internal.Product > 0)
+			printk("\nProduct bought for %d credit.\n", vendingMachine.internal.Price);
 
-		if (vendingMachine.internal.Product == 0 && vendingMachine.internal.Credit > 0) {
-			//vendingMachine.internal.Credit = 0;
-			printk("\nRefunded credit!\n");
-			//gpio_pin_configure_dt(&led3, GPIO_OUTPUT_INACTIVE);
-		} else if (vendingMachine.internal.Product == 0 && vendingMachine.internal.Credit <= 0) {
-			printk("\nThere is no credit to refund!\n");
-			//gpio_pin_configure_dt(&led2, GPIO_OUTPUT_INACTIVE);
-		}
+		if (vendingMachine.internal.Product == 0 && vendingMachine.internal.Credit > 0)
+			printk("\nRefunded %d credit!\n", vendingMachine.internal.Credit);
 
 		button3_pressed_once = false;
 	}
 
-	if (assignment3_led1_get_power(&vendingMachine) == 1) {
-		gpio_pin_set_dt(&led0, 1);
-	} else {
-		gpio_pin_set_dt(&led0, 0);
-	}
-
-	if (assignment3_led2_get_power(&vendingMachine) == 1) {
-		gpio_pin_set_dt(&led1, 1);
-	} else {
-		gpio_pin_set_dt(&led1, 0);
-	}
+	assignment3_but4_raise_enter(&vendingMachine);
 
 	if (assignment3_led3_get_power(&vendingMachine) == 1) {
 		gpio_pin_set_dt(&led2, 1);
@@ -171,10 +134,7 @@ void button3_pressed(const struct device *dev, struct gpio_callback *cb, uint32_
 		gpio_pin_set_dt(&led3, 0);
 	}
 
-	// Print current credit and product information
-    printk("\nCurrent credit: %d\n", vendingMachine.internal.Credit);
-	printk("Selected product: %d\n", vendingMachine.internal.Product);
-	printk("Price of selected product: %d\n", vendingMachine.internal.Price);
+	print_status();
 }
 
 int main(void)
@@ -267,11 +227,6 @@ int main(void)
     gpio_add_callback(button1.port, &button1_cb_data);
     gpio_add_callback(button2.port, &button2_cb_data);
     gpio_add_callback(button3.port, &button3_cb_data);   
-
-	/*while (1)
-	{
-		k_msleep(1000);
-	}*/
 
 	assignment3_init(&vendingMachine);
 	assignment3_enter(&vendingMachine);
