@@ -3,4 +3,5 @@ find_package(Zephyr REQUIRED HINTS $ENV{ZEPHYR_BASE})
 
 project(NCS)
 
-target_sources(app PRIVATE app/main.c)
+target_sources(app PRIVATE app/main.c src-gen/assignment3.c)
+target_include_directories(app PRIVATE src-gen src)
