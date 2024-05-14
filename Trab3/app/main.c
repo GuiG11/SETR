@@ -5,38 +5,8 @@
 #include <zephyr/sys/printk.h>
 #include "../src/sc_types.h"
 #include "../src-gen/assignment3.h"
-#include "main.h"
+#include "config.h"
 
-
-#define SW0_NODE	DT_ALIAS(sw0)
-#define SW1_NODE	DT_ALIAS(sw1)
-#define SW2_NODE	DT_ALIAS(sw2)
-#define SW3_NODE	DT_ALIAS(sw3)
-
-static const struct gpio_dt_spec button0 = GPIO_DT_SPEC_GET(SW0_NODE, gpios);
-static const struct gpio_dt_spec button1 = GPIO_DT_SPEC_GET(SW1_NODE, gpios);
-static const struct gpio_dt_spec button2 = GPIO_DT_SPEC_GET(SW2_NODE, gpios);
-static const struct gpio_dt_spec button3 = GPIO_DT_SPEC_GET(SW3_NODE, gpios);
-
-#define LED0_NODE DT_ALIAS(led0)
-#define LED1_NODE DT_ALIAS(led1)	
-#define LED2_NODE DT_ALIAS(led2)
-#define LED3_NODE DT_ALIAS(led3)
-
-static const struct gpio_dt_spec led0 = GPIO_DT_SPEC_GET(LED0_NODE, gpios);
-static const struct gpio_dt_spec led1 = GPIO_DT_SPEC_GET(LED1_NODE, gpios);
-static const struct gpio_dt_spec led2 = GPIO_DT_SPEC_GET(LED2_NODE, gpios);
-static const struct gpio_dt_spec led3 = GPIO_DT_SPEC_GET(LED3_NODE, gpios);
-
-static struct gpio_callback button0_cb_data;
-static struct gpio_callback button1_cb_data;
-static struct gpio_callback button2_cb_data;
-static struct gpio_callback button3_cb_data;
-
-static bool button3_pressed_once = false;
-
-// Initialize the state machine
-Assignment3 vendingMachine;
 
 void print_status(){
 	// Print current credit and product information
@@ -143,42 +113,42 @@ int leds_configure()
 	int ret;
 
 	if (!device_is_ready(led0.port)) {
-		return -1;
+		return CONFIG_FAILURE;
 	}
 
     if (!device_is_ready(led1.port)) {
-		return -1;
+		return CONFIG_FAILURE;
 	}
 
     if (!device_is_ready(led2.port)) {
-		return -1;
+		return CONFIG_FAILURE;
 	}
 
     if (!device_is_ready(led3.port)) {
-		return -1;
+		return CONFIG_FAILURE;
 	}
 
 	ret = gpio_pin_configure_dt(&led0, GPIO_OUTPUT_INACTIVE);
 	if (ret < 0) {
-		return -1;
+		return CONFIG_FAILURE;
 	}
 
 	ret = gpio_pin_configure_dt(&led1, GPIO_OUTPUT_INACTIVE);
 	if (ret < 0) {
-		return -1;
+		return CONFIG_FAILURE;
 	}
 
 	ret = gpio_pin_configure_dt(&led2, GPIO_OUTPUT_INACTIVE);
 	if (ret < 0) {
-		return -1;
+		return CONFIG_FAILURE;
 	}
 
 	ret = gpio_pin_configure_dt(&led3, GPIO_OUTPUT_INACTIVE);
 	if (ret < 0) {
-		return -1;
+		return CONFIG_FAILURE;
 	}
 
-	return 0;
+	return CONFIG_SUCCESS;
 }
 
 int buttons_configure()
@@ -186,52 +156,47 @@ int buttons_configure()
 	int ret;
 
 	if (!device_is_ready(button0.port)) {
-		return -1;
+		return CONFIG_FAILURE;
 	}
 
 	if (!device_is_ready(button1.port)) {
-		return -1;
+		return CONFIG_FAILURE;
 	}
 
 	if (!device_is_ready(button2.port)) {
-		return -1;
+		return CONFIG_FAILURE;
 	}
 
 	if (!device_is_ready(button3.port)) {
-		return -1;
+		return CONFIG_FAILURE;
 	}
 
 	ret = gpio_pin_configure_dt(&button0, GPIO_INPUT);
 	if (ret < 0) {
-		return -1;
+		return CONFIG_FAILURE;
 	}
 
 	ret = gpio_pin_configure_dt(&button1, GPIO_INPUT);
 	if (ret < 0) {
-		return -1;
+		return CONFIG_FAILURE;
 	}
 
 	ret = gpio_pin_configure_dt(&button2, GPIO_INPUT);
 	if (ret < 0) {
-		return -1;
+		return CONFIG_FAILURE;
 	}
 
 	ret = gpio_pin_configure_dt(&button3, GPIO_INPUT);
 	if (ret < 0) {
-		return -1;
+		return CONFIG_FAILURE;
 	}
 
-	return 0;
-}
-
-int interrupts_configure()
-{
-	int ret;
 	ret = gpio_pin_interrupt_configure_dt(&button0, GPIO_INT_EDGE_TO_ACTIVE );
     ret = gpio_pin_interrupt_configure_dt(&button1, GPIO_INT_EDGE_TO_ACTIVE );
     ret = gpio_pin_interrupt_configure_dt(&button2, GPIO_INT_EDGE_TO_ACTIVE );
     ret = gpio_pin_interrupt_configure_dt(&button3, GPIO_INT_EDGE_TO_ACTIVE );
-	return 0;
+
+	return CONFIG_SUCCESS;
 }
 
 void init_callback()
@@ -252,15 +217,23 @@ void add_callback()
 
 int main(void)
 {
-	leds_configure();
-	buttons_configure();
-	interrupts_configure();
+	if(leds_configure() == CONFIG_FAILURE){
+		printk("\nLEDS configuration failed! Aborting...\n");
+		return -1;
+	}
+
+	if(buttons_configure() == CONFIG_FAILURE){
+		printk("\nButtons configuration failed! Aborting...\n");
+		return -1;
+	}
 
 	init_callback();
-
 	add_callback();
 
 	assignment3_init(&vendingMachine);
 	assignment3_enter(&vendingMachine);
+
+	print_status();
+
     return 0;
 }
