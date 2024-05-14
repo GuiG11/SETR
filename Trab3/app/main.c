@@ -8,7 +8,7 @@
 #include "config.h"
 
 
-void print_status(){
+void print_status() {
 	// Print current credit and product information
 	printk("\n==============================\n");
     printk("Current credit: %d\n", vm.internal.Credit);
@@ -48,15 +48,15 @@ void button2_pressed(const struct device *dev, struct gpio_callback *cb, uint32_
     printk("\nBrowsing products...\n");
 
 	if (vendingMachine_led1_get_power(&vm) == 1) {
-		gpio_pin_set_dt(&led0, 1);
+		gpio_pin_set_dt(&led0, 1);  // LED 1 active
 	} else {
-		gpio_pin_set_dt(&led0, 0);
+		gpio_pin_set_dt(&led0, 0);  // LED 1 inactive
 	}
 
 	if (vendingMachine_led2_get_power(&vm) == 1) {
-		gpio_pin_set_dt(&led1, 1);
+		gpio_pin_set_dt(&led1, 1);  // LED 2 active
 	} else {
-		gpio_pin_set_dt(&led1, 0);
+		gpio_pin_set_dt(&led1, 0);  // LED 2 inactive
 	}
 
 	print_status();
@@ -94,15 +94,15 @@ void button3_pressed(const struct device *dev, struct gpio_callback *cb, uint32_
 	vendingMachine_but4_raise_enter(&vm);
 
 	if (vendingMachine_led3_get_power(&vm) == 1) {
-		gpio_pin_set_dt(&led2, 1);
+		gpio_pin_set_dt(&led2, 1);  // LED 3 active
 	} else {
-		gpio_pin_set_dt(&led2, 0);
+		gpio_pin_set_dt(&led2, 0);  // LED 3 inactive
 	}
 
 	if (vendingMachine_led4_get_power(&vm) == 1) {
-		gpio_pin_set_dt(&led3, 1);
+		gpio_pin_set_dt(&led3, 1);  // LED 4 active
 	} else {
-		gpio_pin_set_dt(&led3, 0);
+		gpio_pin_set_dt(&led3, 0);  // LED 4 inactive
 	}
 
 	print_status();
@@ -217,12 +217,12 @@ void add_callback()
 
 int main(void)
 {
-	if(leds_configure() == CONFIG_FAILURE){
-		printk("\nLEDS configuration failed! Aborting...\n");
+	if (leds_configure() == CONFIG_FAILURE) {
+		printk("\nLEDs configuration failed! Aborting...\n");
 		return -1;
 	}
 
-	if(buttons_configure() == CONFIG_FAILURE){
+	if (buttons_configure() == CONFIG_FAILURE) {
 		printk("\nButtons configuration failed! Aborting...\n");
 		return -1;
 	}
