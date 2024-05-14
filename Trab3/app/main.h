@@ -11,7 +11,7 @@
 #include "../src/sc_types.h"
 #include "../src-gen/assignment3.h"
 
-
+void print_status();
 void button0_pressed(const struct device *dev, struct gpio_callback *cb, uint32_t pins);
 void button1_pressed(const struct device *dev, struct gpio_callback *cb, uint32_t pins);
 void button2_pressed(const struct device *dev, struct gpio_callback *cb, uint32_t pins);

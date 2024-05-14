@@ -140,7 +140,7 @@ void button3_pressed(const struct device *dev, struct gpio_callback *cb, uint32_
 
 int leds_configure()
 {
-	 int ret;
+	int ret;
 
 	if (!device_is_ready(led0.port)) {
 		return -1;
@@ -177,9 +177,11 @@ int leds_configure()
 	if (ret < 0) {
 		return -1;
 	}
+
+	return 0;
 }
 
-int buttons_callback()
+int buttons_configure()
 {
 	int ret;
 
@@ -218,6 +220,8 @@ int buttons_callback()
 	if (ret < 0) {
 		return -1;
 	}
+
+	return 0;
 }
 
 int interrupts_configure()
@@ -227,6 +231,7 @@ int interrupts_configure()
     ret = gpio_pin_interrupt_configure_dt(&button1, GPIO_INT_EDGE_TO_ACTIVE );
     ret = gpio_pin_interrupt_configure_dt(&button2, GPIO_INT_EDGE_TO_ACTIVE );
     ret = gpio_pin_interrupt_configure_dt(&button3, GPIO_INT_EDGE_TO_ACTIVE );
+	return 0;
 }
 
 void init_callback()
