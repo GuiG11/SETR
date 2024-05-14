@@ -1,10 +1,10 @@
 GeneratorModel for create::c {
 
-	const PROJECT : string = "Assignment3"
+	const PROJECT : string = "VendingMachine"
 
 	const FOLDER : string = "src-gen"
 
-	statechart assignment3 {
+	statechart VendingMachine {
 
 		feature Outlet {
 			targetProject = PROJECT

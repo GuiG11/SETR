@@ -9,7 +9,7 @@
 #include <zephyr/drivers/gpio.h>
 #include <zephyr/sys/printk.h>
 #include "../src/sc_types.h"
-#include "../src-gen/assignment3.h"
+#include "../src-gen/VendingMachine.h"
 
 #define CONFIG_FAILURE 0
 #define CONFIG_SUCCESS 1
@@ -42,7 +42,7 @@ static struct gpio_callback button3_cb_data;
 static bool button3_pressed_once = false;
 
 // Initialize the state machine
-Assignment3 vendingMachine;
+VendingMachine vm;
 
 void print_status();
 
