@@ -1,6 +1,5 @@
 var VendingMachine_8c =
 [
-    [ "SC_UNUSED", "VendingMachine_8c.html#a575596fbdd0b116126835a7781fece54", null ],
     [ "vendingMachine_but1_raise_insert", "VendingMachine_8c.html#aef4aad0ebbc81a6f4e06c0756e864487", null ],
     [ "vendingMachine_but2_raise_insert", "VendingMachine_8c.html#a280652d9505b130ac8b2a40e401a5d74", null ],
     [ "vendingMachine_but3_raise_browse", "VendingMachine_8c.html#aa083e0a349f8240468aa67851eb2566c", null ],

@@ -8,6 +8,5 @@ var main_8c =
     [ "buttons_configure", "main_8c.html#a74669f09dc3e5a79ecfdc6c995586288", null ],
     [ "init_callback", "main_8c.html#a81b8b5ea24451f1b536c455f73b2b5d5", null ],
     [ "leds_configure", "main_8c.html#a5848d96ca479dc0a8294a97dd4165ed8", null ],
-    [ "main", "main_8c.html#a840291bc02cba5474a4cb46a9b9566fe", null ],
     [ "print_status", "main_8c.html#a8008fbbb8f369eeb0f452863fe664355", null ]
 ];

@@ -1,8 +1,10 @@
-digraph "/home/gui/SETR/Trab3/app" {
+digraph "/home/simaopedro/Desktop/SETR/SETR/Trab3/app"
+{
+ // LATEX_PDF_SIZE
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
   compound=true
-  node [ fontsize="10", fontname="Helvetica"];
-  edge [ labelfontsize="10", labelfontname="Helvetica"];
-  dir_d422163b96683743ed3963d4aac17747 [shape=box, label="app", style="filled", fillcolor="#eeeeff", pencolor="black", URL="dir_d422163b96683743ed3963d4aac17747.html"];
-  dir_e6a870eb2e98227d7e06896f3f119908 [shape=box label="src-gen" URL="dir_e6a870eb2e98227d7e06896f3f119908.html"];
-  dir_d422163b96683743ed3963d4aac17747->dir_e6a870eb2e98227d7e06896f3f119908 [headlabel="2", labeldistance=1.5 headhref="dir_000000_000001.html"];
+  dir_d422163b96683743ed3963d4aac17747 [shape=box, label="app", style="filled,bold,", fillcolor="#d3ecd5", color="grey25", URL="dir_d422163b96683743ed3963d4aac17747.html"];
+  dir_e6a870eb2e98227d7e06896f3f119908 [shape=box, label="src-gen", style="", fillcolor="#d3ecd5", color="grey25", URL="dir_e6a870eb2e98227d7e06896f3f119908.html"];
+  dir_d422163b96683743ed3963d4aac17747->dir_e6a870eb2e98227d7e06896f3f119908 [headlabel="2", labeldistance=1.5 headhref="dir_000000_000002.html"];
 }
