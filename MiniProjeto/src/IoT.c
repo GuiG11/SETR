@@ -71,22 +71,22 @@ int main (void)
 		return -1;
 	}
 
-	ret = gpio_pin_configure_dt(&led0, GPIO_OUTPUT_INACTIVE);
+	ret = gpio_pin_configure_dt(&led0, GPIO_OUTPUT_ACTIVE);
 	if (ret < 0) {
 		return -1;
 	}
 
-	ret = gpio_pin_configure_dt(&led1, GPIO_OUTPUT_INACTIVE);
+	ret = gpio_pin_configure_dt(&led1, GPIO_OUTPUT_ACTIVE);
 	if (ret < 0) {
 		return -1;
 	}
 
-	ret = gpio_pin_configure_dt(&led2, GPIO_OUTPUT_INACTIVE);
+	ret = gpio_pin_configure_dt(&led2, GPIO_OUTPUT_ACTIVE);
 	if (ret < 0) {
 		return -1;
 	}
 
-	ret = gpio_pin_configure_dt(&led3, GPIO_OUTPUT_INACTIVE);
+	ret = gpio_pin_configure_dt(&led3, GPIO_OUTPUT_ACTIVE);
 	if (ret < 0) {
 		return -1;
 	}
