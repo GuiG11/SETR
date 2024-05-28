@@ -58,24 +58,42 @@ static uint8_t tx_buf[] =   {"nRF Connect SDK Fundamentals Course\n\r"
 // Define the receive buffer 
 static uint8_t rx_buf[RECEIVE_BUFF_SIZE] = {0};
 
+uint32_t button_states[4];
+uint32_t led_states[4];
+
 // Define the callback function for UART 
 static void uart_cb(const struct device *dev, struct uart_event *evt, void *user_data) {
-    uint32_t led_states[4];
 
     switch (evt->type) {
         case UART_RX_RDY:
             if ((evt->data.rx.len) == 1) {
-                read_led_states(led_states);
-                if (evt->data.rx.buf[evt->data.rx.offset] == '1') {
-                    led_states[0] = !led_states[0];
-                } else if (evt->data.rx.buf[evt->data.rx.offset] == '2') {
-                    led_states[1] = !led_states[1];
-                } else if (evt->data.rx.buf[evt->data.rx.offset] == '3') {
-                    led_states[2] = !led_states[2];
-                } else if (evt->data.rx.buf[evt->data.rx.offset] == '4') {
-                    led_states[3] = !led_states[3];
+
+				uint8_t cmd = evt->data.rx.buf[evt->data.rx.offset];
+            	switch (cmd) {
+                	case '1':
+                        gpio_pin_toggle_dt(&led0);
+                    	led_states[0] = !led_states[0];
+						break;
+					case '2':
+                        gpio_pin_toggle_dt(&led1);
+                    	led_states[1] = !led_states[1];
+						break;
+					case '3':
+                        gpio_pin_toggle_dt(&led2);
+                    	led_states[2] = !led_states[2];
+						break;
+					case '4':
+                        gpio_pin_toggle_dt(&led3);
+                    	led_states[3] = !led_states[3];
+						break;
+					case 'B': 
+                    case 'b':
+                    	// Create a buffer to hold the button states as a string
+                    	printk("Button states: %d %d %d %d\n", button_states[0], button_states[1], button_states[2], button_states[3]); // o print é feito via UART
+
+                    break;
                 }
-                write_led_states(led_states);
+                //write_led_states(led_states);
             }
             break;
         case UART_RX_DISABLED:
@@ -87,24 +105,25 @@ static void uart_cb(const struct device *dev, struct uart_event *evt, void *user
 }
 
 void button0_pressed(const struct device *dev, struct gpio_callback *cb, uint32_t pins) {
-    gpio_pin_toggle_dt(&led0);
+    //gpio_pin_toggle_dt(&led0); não é para controlar leds pelos botões 
 }
 
 void button1_pressed(const struct device *dev, struct gpio_callback *cb, uint32_t pins) {
-    gpio_pin_toggle_dt(&led1);
+    //gpio_pin_toggle_dt(&led1);
 }
 
 void button2_pressed(const struct device *dev, struct gpio_callback *cb, uint32_t pins) {
-    gpio_pin_toggle_dt(&led2);
+    //gpio_pin_toggle_dt(&led2);
 }
 
 void button3_pressed(const struct device *dev, struct gpio_callback *cb, uint32_t pins) {
-    gpio_pin_toggle_dt(&led3);
+    //gpio_pin_toggle_dt(&led3);
 }
 
 void thread_buttons(void) {
-    uint32_t button_states[4];
     while (1) {
+        read_button_states(button_states);
+
         button_states[0] = gpio_pin_get_dt(&button0);
         button_states[1] = gpio_pin_get_dt(&button1);
         button_states[2] = gpio_pin_get_dt(&button2);
@@ -112,21 +131,18 @@ void thread_buttons(void) {
 
         write_button_states(button_states);
 
-        printk("Button states: %d %d %d %d\n", button_states[0], button_states[1], button_states[2], button_states[3]);
-
         k_msleep(SLEEP_TIME_MS);
     }
 }
 
 void thread_leds(void) {
-    uint32_t led_states[4];
     while (1) {
         read_led_states(led_states);
 
-        gpio_pin_set_dt(&led0, led_states[0]);
-        gpio_pin_set_dt(&led1, led_states[1]);
-        gpio_pin_set_dt(&led2, led_states[2]);
-        gpio_pin_set_dt(&led3, led_states[3]);
+        led_states[0] = gpio_pin_get_dt(&led0);
+        led_states[1] = gpio_pin_get_dt(&led1);
+        led_states[2] = gpio_pin_get_dt(&led2);
+        led_states[3] = gpio_pin_get_dt(&led3);
 
         k_msleep(SLEEP_TIME_MS);
     }
@@ -156,51 +172,92 @@ int main(void) {
 
     int ret;
 
+	// Verify that the UART device is ready
+	if (!device_is_ready(uart)){
+		printk("UART device not ready\r\n");
+		return 1 ;
+	}
+
     // Check if the buttons are ready
     if (!device_is_ready(button0.port) || !device_is_ready(button1.port) || !device_is_ready(button2.port) || !device_is_ready(button3.port)) {
         printk("Error: Buttons device not ready.\n");
-        return;
+        return 1;
     }
 
     // Configure button pins
     ret = gpio_pin_configure_dt(&button0, GPIO_INPUT);
-    ret = gpio_pin_configure_dt(&button1, GPIO_INPUT);
-    ret = gpio_pin_configure_dt(&button2, GPIO_INPUT);
-    ret = gpio_pin_configure_dt(&button3, GPIO_INPUT);
+	if (ret < 0) {
+		return 1;
+	}
+	ret = gpio_pin_configure_dt(&button1, GPIO_INPUT);
+	if (ret < 0) {
+		return 1;
+	}
+	ret = gpio_pin_configure_dt(&button2, GPIO_INPUT);
+	if (ret < 0) {
+		return 1;
+	}
+	ret = gpio_pin_configure_dt(&button3, GPIO_INPUT);
+	if (ret < 0) {
+		return 1;
+	}
 
     // Check if the LEDs are ready
     if (!device_is_ready(led0.port) || !device_is_ready(led1.port) || !device_is_ready(led2.port) || !device_is_ready(led3.port)) {
         printk("Error: LED device not ready.\n");
-        return;
+        return -1;
     }
 
     // Configure LED pins
     ret = gpio_pin_configure_dt(&led0, GPIO_OUTPUT_ACTIVE);
-    ret = gpio_pin_configure_dt(&led1, GPIO_OUTPUT_ACTIVE);
-    ret = gpio_pin_configure_dt(&led2, GPIO_OUTPUT_ACTIVE);
-    ret = gpio_pin_configure_dt(&led3, GPIO_OUTPUT_ACTIVE);
+	if (ret < 0) {
+		return 1;
+	}
+	ret = gpio_pin_configure_dt(&led1, GPIO_OUTPUT_ACTIVE);
+	if (ret < 0) {
+		return 1;
+	}
+	ret = gpio_pin_configure_dt(&led2, GPIO_OUTPUT_ACTIVE);
+	if (ret < 0) {
+		return 1;
+	}
+	ret = gpio_pin_configure_dt(&led3, GPIO_OUTPUT_ACTIVE);
+	if (ret < 0) {
+		return 1;
+	}
 
     // Initialize UART with the callback function
-    uart_callback_set(uart, uart_cb, NULL);
-    uart_tx(uart, tx_buf, sizeof(tx_buf) - 1, SYS_FOREVER_MS);
-    uart_rx_enable(uart, rx_buf, sizeof rx_buf, RECEIVE_TIMEOUT);
+    ret = uart_callback_set(uart, uart_cb, NULL);
+		if (ret) {
+			return 1;
+		}
+	// Send the data over UART by calling uart_tx()
+	ret = uart_tx(uart, tx_buf, sizeof(tx_buf), SYS_FOREVER_MS);
+	if (ret) {
+		return 1;
+	}
+	// Start receiving by calling uart_rx_enable() and pass it the address of the receive  buffer 
+	ret = uart_rx_enable(uart ,rx_buf,sizeof rx_buf,RECEIVE_TIMEOUT);
+	if (ret) {
+		return 1;
+	}
 
     // Setup button callbacks
     gpio_init_callback(&button0_cb_data, button0_pressed, BIT(button0.pin));
     gpio_add_callback(button0.port, &button0_cb_data);
-    gpio_pin_interrupt_configure_dt(&button0, GPIO_INT_EDGE_TO_ACTIVE);
+    ret = gpio_pin_interrupt_configure_dt(&button0, GPIO_INT_EDGE_TO_ACTIVE);
 
     gpio_init_callback(&button1_cb_data, button1_pressed, BIT(button1.pin));
     gpio_add_callback(button1.port, &button1_cb_data);
-    gpio_pin_interrupt_configure_dt(&button1, GPIO_INT_EDGE_TO_ACTIVE);
+    ret = gpio_pin_interrupt_configure_dt(&button1, GPIO_INT_EDGE_TO_ACTIVE);
 
     gpio_init_callback(&button2_cb_data, button2_pressed, BIT(button2.pin));
     gpio_add_callback(button2.port, &button2_cb_data);
-    gpio_pin_interrupt_configure_dt(&button2, GPIO_INT_EDGE_TO_ACTIVE);
+    ret = gpio_pin_interrupt_configure_dt(&button2, GPIO_INT_EDGE_TO_ACTIVE);
 
     gpio_init_callback(&button3_cb_data, button3_pressed, BIT(button3.pin));
     gpio_add_callback(button3.port, &button3_cb_data);
-    gpio_pin_interrupt_configure_dt(&button3, GPIO_INT_EDGE_TO_ACTIVE);
+    ret = gpio_pin_interrupt_configure_dt(&button3, GPIO_INT_EDGE_TO_ACTIVE);
 
 	return 0;
 }
