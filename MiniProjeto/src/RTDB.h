@@ -22,7 +22,7 @@ void read_button_states(uint32_t *states);
 void write_button_states(uint32_t *states);
 
 void read_led_states(uint32_t *states);
-//void write_led_states(uint32_t *states); não é para escrever os estados dos leds
+void write_led_states(uint32_t *states); 
 
 //float read_analog_value(void);
 //void write_analog_value(uint16_t raw, float value);

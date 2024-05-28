@@ -7,7 +7,7 @@
 #include "RTDB.h"
 
 // 1000 msec = 1 sec 
-#define SLEEP_TIME_MS   1000
+#define SLEEP_TIME_MS   100
 
 // Define the size of the receive buffer 
 #define RECEIVE_BUFF_SIZE 10
@@ -61,6 +61,11 @@ static uint8_t rx_buf[RECEIVE_BUFF_SIZE] = {0};
 uint32_t button_states[4];
 uint32_t led_states[4];
 
+// Função auxiliar para enviar dados via UART
+static void uart_send(const char *data) {
+    uart_tx(uart, data, strlen(data), SYS_FOREVER_MS);
+}
+
 // Define the callback function for UART 
 static void uart_cb(const struct device *dev, struct uart_event *evt, void *user_data) {
 
@@ -71,29 +76,29 @@ static void uart_cb(const struct device *dev, struct uart_event *evt, void *user
 				uint8_t cmd = evt->data.rx.buf[evt->data.rx.offset];
             	switch (cmd) {
                 	case '1':
-                        gpio_pin_toggle_dt(&led0);
                     	led_states[0] = !led_states[0];
 						break;
 					case '2':
-                        gpio_pin_toggle_dt(&led1);
                     	led_states[1] = !led_states[1];
 						break;
 					case '3':
-                        gpio_pin_toggle_dt(&led2);
                     	led_states[2] = !led_states[2];
 						break;
-					case '4':
-                        gpio_pin_toggle_dt(&led3);
+                    case '4':
                     	led_states[3] = !led_states[3];
 						break;
 					case 'B': 
                     case 'b':
                     	// Create a buffer to hold the button states as a string
-                    	printk("Button states: %d %d %d %d\n", button_states[0], button_states[1], button_states[2], button_states[3]); // o print é feito via UART
-
+                        read_button_states(button_states);
+                    	//printk("Button states: %d %d %d %d\n", button_states[0], button_states[1], button_states[2], button_states[3]); // o print é feito via UART
+                        char buf[128*4];
+                        snprintf(buf, sizeof(buf), "Button 1 state: %d | Button 2 state: %d | Button 3 state: %d | Button 4 state: %d\n\r", 
+                            button_states[0], button_states[1], button_states[2], button_states[3]);
+                        uart_send(buf);
                     break;
                 }
-                //write_led_states(led_states);
+                write_led_states(led_states);
             }
             break;
         case UART_RX_DISABLED:
@@ -122,8 +127,6 @@ void button3_pressed(const struct device *dev, struct gpio_callback *cb, uint32_
 
 void thread_buttons(void) {
     while (1) {
-        read_button_states(button_states);
-
         button_states[0] = gpio_pin_get_dt(&button0);
         button_states[1] = gpio_pin_get_dt(&button1);
         button_states[2] = gpio_pin_get_dt(&button2);
@@ -139,10 +142,10 @@ void thread_leds(void) {
     while (1) {
         read_led_states(led_states);
 
-        led_states[0] = gpio_pin_get_dt(&led0);
-        led_states[1] = gpio_pin_get_dt(&led1);
-        led_states[2] = gpio_pin_get_dt(&led2);
-        led_states[3] = gpio_pin_get_dt(&led3);
+        gpio_pin_set_dt(&led0, led_states[0]);
+        gpio_pin_set_dt(&led1, led_states[1]);
+        gpio_pin_set_dt(&led2, led_states[2]);
+        gpio_pin_set_dt(&led3, led_states[3]);
 
         k_msleep(SLEEP_TIME_MS);
     }
