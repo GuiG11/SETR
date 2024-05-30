@@ -70,6 +70,7 @@ struct adc_sequence sequence = {
 
 // Define the transmission buffer, which is a buffer to hold the data to be sent over UART
 static uint8_t tx_buf[] =   {"\nPress 1-4 on your keyboard to toggle LEDS 1-4 on your development kit\n\r"
+                             "Press  A  on your keyboard to see potensiometer\n\r"
                              "Press  B  on your keyboard to see buttons state\n\r"};
 
 // Define the receive buffer 

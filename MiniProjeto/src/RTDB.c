@@ -52,6 +52,8 @@ int16_t read_raw_value(void) {
     int16_t raw;
     k_mutex_lock(&rtdb_mutex, K_FOREVER);
     raw = io_data.analog_value_raw;
+    if (raw < 0)
+        raw = 0;
     k_mutex_unlock(&rtdb_mutex);
     return raw;
 }
@@ -61,6 +63,8 @@ int read_analog_value(void) {
     int value;
     k_mutex_lock(&rtdb_mutex, K_FOREVER);
     value = io_data.analog_value;
+    if (value < 0)
+        value = 0;
     k_mutex_unlock(&rtdb_mutex);
     return value;
 }
