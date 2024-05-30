@@ -46,21 +46,36 @@ void write_led_states(uint32_t *states) {
     }
     k_mutex_unlock(&rtdb_mutex);
 }
-/*
+
+// Function to read raw sensor value
+int16_t read_raw_value(void) {
+    int16_t raw;
+    k_mutex_lock(&rtdb_mutex, K_FOREVER);
+    raw = io_data.analog_value_raw;
+    k_mutex_unlock(&rtdb_mutex);
+    return raw;
+}
+
 // Function to read analog sensor value
-float read_analog_value(void) {
-    float value;
-    k_mutex_lock(&test_mutex, K_FOREVER);
+int read_analog_value(void) {
+    int value;
+    k_mutex_lock(&rtdb_mutex, K_FOREVER);
     value = io_data.analog_value;
-    k_mutex_unlock(&test_mutex);
+    k_mutex_unlock(&rtdb_mutex);
     return value;
 }
 
-// Function to write analog sensor value
-void write_analog_value(uint16_t raw, float value) {
-    k_mutex_lock(&test_mutex, K_FOREVER);
+// Function to write raw sensor value
+void write_raw_value(uint16_t raw) {
+    k_mutex_lock(&rtdb_mutex, K_FOREVER);
     io_data.analog_value_raw = raw;
-    io_data.analog_value = value;
-    k_mutex_unlock(&test_mutex);
+    k_mutex_unlock(&rtdb_mutex);
 }
-*/
+
+// Function to write analog sensor value
+void write_analog_value(int value) {
+    k_mutex_lock(&rtdb_mutex, K_FOREVER);
+    io_data.analog_value = value;
+    k_mutex_unlock(&rtdb_mutex);
+}
+
