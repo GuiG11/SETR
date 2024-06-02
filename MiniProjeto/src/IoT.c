@@ -14,13 +14,17 @@ LOG_MODULE_REGISTER(IoT, LOG_LEVEL_DBG);
 #define SLEEP_TIME_MS   100
 
 // Define the size of the receive buffer 
-#define RECEIVE_BUFF_SIZE 10
+#define RECEIVE_BUFF_SIZE 128
 
 // Define the receiving timeout period 
 #define RECEIVE_TIMEOUT 100
 
 // Define stack size and scheduling priority used by each thread 
 #define STACKSIZE 1024
+
+// Commands definitions
+#define SOF '#'
+#define EOF '!'
 
 #define THREAD0_PRIORITY 7
 #define THREAD1_PRIORITY 7
@@ -69,86 +73,134 @@ struct adc_sequence sequence = {
 };
 
 // Define the transmission buffer, which is a buffer to hold the data to be sent over UART
-static uint8_t tx_buf[] =   {"\nPress 1-4 on your keyboard to toggle LEDS 1-4 on your development kit\n\r"
-                             "Press  A  on your keyboard to see potensiometer\n\r"
-                             "Press  B  on your keyboard to see buttons state\n\r"};
+static uint8_t tx_buf[] =   {"\nEnter a command in this format #CMDDATA!\n\r"
+                             "\tCMD:\t'L' for LEDs\t'R' for Readings\n\r"
+                             "\tDATA:\tL: 4 binaries\tR: 'A' for ADC, 'B' for Buttons\n\r"};
 
 // Define the receive buffer 
 static uint8_t rx_buf[RECEIVE_BUFF_SIZE] = {0};
+static size_t rx_buf_index = 0;
 
 uint32_t button_states[4];
 uint32_t led_states[4];
 
 // Função auxiliar para enviar dados via UART
 static void uart_send(const char *data) {
-    uart_tx(uart, data, strlen(data), SYS_FOREVER_MS);
+    int ret = uart_tx(uart, data, strlen(data), SYS_FOREVER_MS);
+    if (ret)
+        LOG_ERR("Failed to send data via UART: %d", ret);
 }
 
-// Define the callback function for UART 
-static void uart_cb(const struct device *dev, struct uart_event *evt, void *user_data) {
+// Process command
+static void process_command(const char *cmd, const char *data) {
+    if (strcmp(cmd, "L") == 0) {
+        for (int i = 0; i < 4; i++) {
+            led_states[i] = data[i] - '0';
+        }
+        write_led_states(led_states);
+    } else if (strcmp(cmd, "R") == 0) {
+        if (strcmp(data, "A") == 0) {
+            int value = read_analog_value();
+            char buf[32];
+            snprintf(buf, sizeof(buf), "Analog value: %d mV\n\r", value);
+            //printk("\n%s\n", buf);
+            uart_send(buf);
+        } else if (strcmp(data, "B") == 0) {
+            read_button_states(button_states);
+            char buf[64];
+            snprintf(buf, sizeof(buf), "Button states: %d %d %d %d\n\r",
+                     button_states[0], button_states[1], button_states[2], button_states[3]);
+            //printk("\n%s\n", buf);
+            uart_send(buf);
+        }
+    } else {
+        uart_send("Invalid command\n\r");
+    }
+}
 
+// Validate and process received frame
+static void process_frame(const char *frame) {
+    char cmd[2] = {0};
+    char data[5] = {0};
+    int frame_len = strlen(frame);
+
+    //LOG_INF("Processing frame: %s", frame);
+
+    if (frame[0] != '#' || frame[frame_len - 1] != '!') {
+        uart_send("Invalid frame\n\r");
+        return;
+    }
+
+    // Extract command and data from the frame
+    sscanf(frame, "#%1s", cmd);
+
+    if (strcmp(cmd, "L") == 0){
+        if (frame_len < 7){
+        uart_send("Invalid frame\n\r");
+        return;
+        }
+        // Extract data for 'L' command
+        sscanf(frame, "#L%4s!", data);
+    }
+    else if (strcmp(cmd, "R") == 0){
+        if (frame_len < 4){
+        uart_send("Invalid frame\n\r");
+        return;
+        }
+        // Extract data for 'R' command
+        sscanf(frame, "#R%1s!", data);
+    }
+    else {
+        uart_send("Invalid frame\n\r");
+        return;
+    }
+
+
+    //LOG_INF("Command: %s, Data: %s", cmd, data);
+
+    // Process the valid command
+    process_command(cmd, data);
+}
+
+// Define the callback function for UART 
+static void uart_cb(const struct device *dev, struct uart_event *evt, void *user_data) {
+    static bool receiving_frame = false;
     switch (evt->type) {
         case UART_RX_RDY:
-            if ((evt->data.rx.len) == 1) {
+            for (size_t i = 0; i < evt->data.rx.len; i++) {
+                char received_char = evt->data.rx.buf[evt->data.rx.offset + i];
+                printk("%c", received_char);
+                //uart_send((char[]){received_char, '\0'});  // Echo received character
 
-				uint8_t cmd = evt->data.rx.buf[evt->data.rx.offset];
-            	switch (cmd) {
-                	case '1':
-                    	led_states[0] = !led_states[0];
-						break;
-					case '2':
-                    	led_states[1] = !led_states[1];
-						break;
-					case '3':
-                    	led_states[2] = !led_states[2];
-						break;
-                    case '4':
-                    	led_states[3] = !led_states[3];
-						break;
-					case 'B': 
-                    case 'b':
-                    	// Create a buffer to hold the button states as a string
-                        read_button_states(button_states);
-                        char buf[64*4];
-                        snprintf(buf, sizeof(buf), "Button 1 state: %d | Button 2 state: %d | Button 3 state: %d | Button 4 state: %d\n\r", 
-                            button_states[0], button_states[1], button_states[2], button_states[3]);
-                        uart_send(buf);
-                        break;
-                    case 'A':
-                    case 'a':
-                        static uint32_t count = 0;
-                        LOG_INF("ADC reading[%u]: %s, channel %d: Raw: %d", count++, adc_channel.dev->name,
-			                adc_channel.channel_id, read_raw_value());
-
-                        LOG_INF(" = %d mV", read_analog_value());
-                        break;
+                if (received_char == SOF) {
+                    receiving_frame = true;
+                    rx_buf_index = 0;
                 }
-                write_led_states(led_states);
+
+                if (receiving_frame && rx_buf_index < RECEIVE_BUFF_SIZE - 1) {
+                    rx_buf[rx_buf_index++] = received_char;
+                }
+
+                if (received_char == EOF && receiving_frame) {
+                    rx_buf[rx_buf_index] = '\0';
+                    process_frame(rx_buf);
+                    receiving_frame = false;  // Reset frame receiving flag after processing
+                    rx_buf_index = 0;  // Reset buffer index after processing
+                }
             }
             break;
         case UART_RX_DISABLED:
-            uart_rx_enable(dev, rx_buf, sizeof rx_buf, RECEIVE_TIMEOUT);
+            uart_rx_enable(dev, rx_buf, sizeof(rx_buf), RECEIVE_TIMEOUT);
             break;
         default:
             break;
     }
 }
 
-void button0_pressed(const struct device *dev, struct gpio_callback *cb, uint32_t pins) {
-
-}
-
-void button1_pressed(const struct device *dev, struct gpio_callback *cb, uint32_t pins) {
-
-}
-
-void button2_pressed(const struct device *dev, struct gpio_callback *cb, uint32_t pins) {
-
-}
-
-void button3_pressed(const struct device *dev, struct gpio_callback *cb, uint32_t pins) {
- 
-}
+void button0_pressed(const struct device *dev, struct gpio_callback *cb, uint32_t pins) {}
+void button1_pressed(const struct device *dev, struct gpio_callback *cb, uint32_t pins) {}
+void button2_pressed(const struct device *dev, struct gpio_callback *cb, uint32_t pins) {}
+void button3_pressed(const struct device *dev, struct gpio_callback *cb, uint32_t pins) {}
 
 void thread_buttons(void) {
     while (1) {
@@ -292,17 +344,20 @@ int main(void) {
 
     // Initialize UART with the callback function
     ret = uart_callback_set(uart, uart_cb, NULL);
-		if (ret) {
-			return 1;
-		}
+	if (ret) {
+        LOG_ERR("Failed to set UART callback: %d", ret);
+		return 1;
+	}
 	// Send the data over UART by calling uart_tx()
 	ret = uart_tx(uart, tx_buf, sizeof(tx_buf), SYS_FOREVER_MS);
 	if (ret) {
+        LOG_ERR("Failed to set UART TX %d", ret);
 		return 1;
 	}
 	// Start receiving by calling uart_rx_enable() and pass it the address of the receive  buffer 
 	ret = uart_rx_enable(uart ,rx_buf,sizeof rx_buf,RECEIVE_TIMEOUT);
 	if (ret) {
+        LOG_ERR("Failed to set UART RX: %d", ret);
 		return 1;
 	}
 
