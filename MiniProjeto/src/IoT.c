@@ -102,19 +102,19 @@ static void process_command(const char *cmd, const char *data) {
         if (strcmp(data, "A") == 0) {
             int value = read_analog_value();
             char buf[32];
-            snprintf(buf, sizeof(buf), "Analog value: %d mV\n\r", value);
+            snprintf(buf, sizeof(buf), "\n\rAnalog value: %d mV", value);
             //printk("\n%s\n", buf);
             uart_send(buf);
         } else if (strcmp(data, "B") == 0) {
             read_button_states(button_states);
             char buf[64];
-            snprintf(buf, sizeof(buf), "Button states: %d %d %d %d\n\r",
+            snprintf(buf, sizeof(buf), "\n\rButton states: %d %d %d %d",
                      button_states[0], button_states[1], button_states[2], button_states[3]);
             //printk("\n%s\n", buf);
             uart_send(buf);
         }
     } else {
-        uart_send("Invalid command\n\r");
+        uart_send("\n\rInvalid command");
     }
 }
 
@@ -124,10 +124,10 @@ static void process_frame(const char *frame) {
     char data[5] = {0};
     int frame_len = strlen(frame);
 
-    //LOG_INF("Processing frame: %s", frame);
+    //LOG_INF("\nProcessing frame: %s", frame);
 
-    if (frame[0] != '#' || frame[frame_len - 1] != '!') {
-        uart_send("Invalid frame\n\r");
+    if (frame[0] != SOF || frame[frame_len - 2] != EOF || frame[frame_len - 1] != ' ') {
+        uart_send("\n\rInvalid frame");
         return;
     }
 
@@ -135,23 +135,33 @@ static void process_frame(const char *frame) {
     sscanf(frame, "#%1s", cmd);
 
     if (strcmp(cmd, "L") == 0){
-        if (frame_len < 7){
-        uart_send("Invalid frame\n\r");
-        return;
+        if (frame_len != 8){
+            uart_send("\n\rInvalid frame");
+            return;
         }
         // Extract data for 'L' command
-        sscanf(frame, "#L%4s!", data);
+        sscanf(frame, "#L%4s! ", data);
+        for(int i=0; i<4; i++){
+            if (data[i] != '0' && data[i] != '1'){
+                uart_send("\n\rInvalid frame");
+                return;
+            }
+        }
     }
     else if (strcmp(cmd, "R") == 0){
-        if (frame_len < 4){
-        uart_send("Invalid frame\n\r");
+        if (frame_len != 5){
+        uart_send("\n\rInvalid frame");
         return;
         }
         // Extract data for 'R' command
-        sscanf(frame, "#R%1s!", data);
+        sscanf(frame, "#R%1s! ", data);
+        if (data[0] != 'A' && data[0] != 'B'){
+            uart_send("\n\rInvalid frame");
+            return;
+        }
     }
     else {
-        uart_send("Invalid frame\n\r");
+        uart_send("\n\rInvalid frame");
         return;
     }
 
@@ -169,8 +179,10 @@ static void uart_cb(const struct device *dev, struct uart_event *evt, void *user
         case UART_RX_RDY:
             for (size_t i = 0; i < evt->data.rx.len; i++) {
                 char received_char = evt->data.rx.buf[evt->data.rx.offset + i];
-                printk("%c", received_char);
-                //uart_send((char[]){received_char, '\0'});  // Echo received character
+                if (received_char != ' ')
+                    printk("%c", received_char);
+                else
+                    printk("\n\r");
 
                 if (received_char == SOF) {
                     receiving_frame = true;
@@ -181,7 +193,7 @@ static void uart_cb(const struct device *dev, struct uart_event *evt, void *user
                     rx_buf[rx_buf_index++] = received_char;
                 }
 
-                if (received_char == EOF && receiving_frame) {
+                if (received_char == ' ') {
                     rx_buf[rx_buf_index] = '\0';
                     process_frame(rx_buf);
                     receiving_frame = false;  // Reset frame receiving flag after processing
