@@ -87,6 +87,7 @@ uint32_t led_states[4];
 // Função auxiliar para enviar dados via UART
 static void uart_send(const char *data) {
     int ret = uart_tx(uart, data, strlen(data), SYS_FOREVER_MS);
+    //printk("%s", &tx_buf);
     if (ret)
         LOG_ERR("Failed to send data via UART: %d", ret);
 }
@@ -126,7 +127,7 @@ static void process_frame(const char *frame) {
 
     //LOG_INF("\nProcessing frame: %s", frame);
 
-    if (frame[0] != SOF || frame[frame_len - 2] != EOF || frame[frame_len - 1] != ' ') {
+    if (frame[0] != SOF || frame[frame_len - 2] != EOF || frame[frame_len - 1] != '\r') {
         uart_send("\n\rInvalid frame");
         return;
     }
@@ -140,7 +141,7 @@ static void process_frame(const char *frame) {
             return;
         }
         // Extract data for 'L' command
-        sscanf(frame, "#L%4s! ", data);
+        sscanf(frame, "#L%4s!", data);
         for(int i=0; i<4; i++){
             if (data[i] != '0' && data[i] != '1'){
                 uart_send("\n\rInvalid frame");
@@ -154,7 +155,7 @@ static void process_frame(const char *frame) {
         return;
         }
         // Extract data for 'R' command
-        sscanf(frame, "#R%1s! ", data);
+        sscanf(frame, "#R%1s!", data);
         if (data[0] != 'A' && data[0] != 'B'){
             uart_send("\n\rInvalid frame");
             return;
@@ -179,7 +180,7 @@ static void uart_cb(const struct device *dev, struct uart_event *evt, void *user
         case UART_RX_RDY:
             for (size_t i = 0; i < evt->data.rx.len; i++) {
                 char received_char = evt->data.rx.buf[evt->data.rx.offset + i];
-                if (received_char != ' ')
+                if (received_char != '\r')
                     printk("%c", received_char);
                 else
                     printk("\n\r");
@@ -193,7 +194,7 @@ static void uart_cb(const struct device *dev, struct uart_event *evt, void *user
                     rx_buf[rx_buf_index++] = received_char;
                 }
 
-                if (received_char == ' ') {
+                if (received_char == '\r') {
                     rx_buf[rx_buf_index] = '\0';
                     process_frame(rx_buf);
                     receiving_frame = false;  // Reset frame receiving flag after processing
