@@ -1,3 +1,14 @@
+/**
+ * @file IoT.c
+ * @brief Implementation file for the "smart" I/O module.
+ * 
+ * This file contains the main implementation for an IIoT device using Zephyr RTOS.
+ * It handles UART communication, button states, LED control, and analog sensor readings.
+ *
+ * \authors Guilherme Guarino 104154, Simão Pinto 102776 - 06/2024
+ *
+ */
+ 
 #include <zephyr/kernel.h>
 #include <zephyr/device.h>
 #include <zephyr/devicetree.h>
@@ -23,8 +34,8 @@ LOG_MODULE_REGISTER(IoT, LOG_LEVEL_DBG);
 #define STACKSIZE 1024
 
 // Commands definitions
-#define SOF '#'
-#define EOF '!'
+#define S_O_Frame '#'
+#define E_O_Frame '!'
 
 #define THREAD0_PRIORITY 7
 #define THREAD1_PRIORITY 7
@@ -84,7 +95,11 @@ static size_t rx_buf_index = 0;
 uint32_t button_states[4];
 uint32_t led_states[4];
 
-// Função auxiliar para enviar dados via UART
+/**
+ * @brief Function to send data via UART.
+ * 
+ * @param data Pointer to the data to be sent.
+ */
 static void uart_send(const char *data) {
     int ret = uart_tx(uart, data, strlen(data), SYS_FOREVER_MS);
     //printk("%s", &tx_buf);
@@ -92,7 +107,12 @@ static void uart_send(const char *data) {
         LOG_ERR("Failed to send data via UART: %d", ret);
 }
 
-// Process command
+/**
+ * @brief Function to process received command.
+ * 
+ * @param cmd The command character.
+ * @param data The data string.
+ */
 static void process_command(const char *cmd, const char *data) {
     if (strcmp(cmd, "L") == 0) {
         for (int i = 0; i < 4; i++) {
@@ -119,7 +139,11 @@ static void process_command(const char *cmd, const char *data) {
     }
 }
 
-// Validate and process received frame
+/**
+ * @brief Function to validate and process received frame.
+ * 
+ * @param frame The received frame.
+ */
 static void process_frame(const char *frame) {
     char cmd[2] = {0};
     char data[5] = {0};
@@ -127,7 +151,7 @@ static void process_frame(const char *frame) {
 
     //LOG_INF("\nProcessing frame: %s", frame);
 
-    if (frame[0] != SOF || frame[frame_len - 2] != EOF || frame[frame_len - 1] != '\r') {
+    if (frame[0] != S_O_Frame || frame[frame_len - 2] != E_O_Frame || frame[frame_len - 1] != '\r') {
         uart_send("\n\rInvalid frame");
         return;
     }
@@ -173,7 +197,12 @@ static void process_frame(const char *frame) {
     process_command(cmd, data);
 }
 
-// Define the callback function for UART 
+/**
+ * @brief UART interrupt callback function.
+ * 
+ * @param dev The UART device.
+ * @param user_data User data.
+ */
 static void uart_cb(const struct device *dev, struct uart_event *evt, void *user_data) {
     static bool receiving_frame = false;
     switch (evt->type) {
@@ -185,7 +214,7 @@ static void uart_cb(const struct device *dev, struct uart_event *evt, void *user
                 else
                     printk("\n\r");
 
-                if (received_char == SOF) {
+                if (received_char == S_O_Frame) {
                     receiving_frame = true;
                     rx_buf_index = 0;
                 }
@@ -215,6 +244,12 @@ void button1_pressed(const struct device *dev, struct gpio_callback *cb, uint32_
 void button2_pressed(const struct device *dev, struct gpio_callback *cb, uint32_t pins) {}
 void button3_pressed(const struct device *dev, struct gpio_callback *cb, uint32_t pins) {}
 
+/**
+ * @brief Thread for reading button states and storing them in RTDB.
+ * 
+ * This function reads the states of the buttons connected to the GPIO pins
+ * and stores these states in the real-time database (RTDB).
+ */
 void thread_buttons(void) {
     while (1) {
         button_states[0] = gpio_pin_get_dt(&button0);
@@ -228,6 +263,12 @@ void thread_buttons(void) {
     }
 }
 
+/**
+ * @brief Thread for reading LED states and updating the LEDs.
+ * 
+ * This function reads the states of the LEDs from the real-time database (RTDB)
+ * and updates the LEDs connected to the GPIO pins according to these states.
+ */
 void thread_leds(void) {
     while (1) {
         read_led_states(led_states);
@@ -241,6 +282,13 @@ void thread_leds(void) {
     }
 }
 
+/**
+ * @brief Thread for reading and processing the analog sensor value.
+ * 
+ * This function reads the raw value from the analog sensor using the ADC,
+ * converts this value to millivolts, and stores both values in the real-time
+ * database (RTDB).
+ */
 void thread_analog_sensor(void) {
     int val_mv, raw;
     int err;
